@@ -118,7 +118,7 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 [Parallax]: https://en.wikipedia.org/wiki/Parallax
 
-[My Defender]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek1/
+[My Defender]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek1/Graphic/My%20Defender
 
 [Tower Defense]: https://en.wikipedia.org/wiki/Tower_defense
 
