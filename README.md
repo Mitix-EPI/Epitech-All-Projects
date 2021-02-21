@@ -11,6 +11,8 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 #### Algorithm projects:
 
+:warning: *Collaborations README are coming* :warning:
+
 | Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) | Has bonus |
 |    :---:     |    :---:    |       :---:       | :---: | :---: |
 |[C Pool Days Part 1]| Bash / C | Introduction to developping in C | ![Medium Difficulty] |
@@ -95,6 +97,8 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 #### Graphical projects
 
+:warning: *Collaborations README are coming* :warning:
+
 *All graphical projects are developped in C with the CSFML graphical library.*
 
 *The projects are sorted from the first to the last.*
@@ -130,6 +134,8 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 #### Mathematical projects
 
+:warning: *Collaborations README are coming* :warning:
+
 *All mathematical projects can be developped in all language. I choose to program in Python :snake:*
 
 *The projects are sorted from the first to the last.*
@@ -163,6 +169,8 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 [The secant method]: https://en.wikipedia.org/wiki/Secant_method
 
 #### Others
+
+:warning: *Collaborations README are coming* :warning:
 
 | Projects Names | Module | Language(s) | Description |
 |      :---:     |  :---: |    :---:    |    :---:    |
