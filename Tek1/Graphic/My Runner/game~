@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-gnome-terminal -e 'mc' &
-make re
-./my_runner map
-make clean
