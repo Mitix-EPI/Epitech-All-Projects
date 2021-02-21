@@ -1,0 +1,271 @@
+commence le handling
+done
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 9 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 8 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 7 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 6 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 5 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+done
+add
+IDX OF CODING BYTE (ADD) : 1
+coding_byte du ADD : 1
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 9 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 8 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 7 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 6 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 5 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 1
+fini le handling
+commence le handling
+done
+live
+je suis passé
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+done
+ld
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 2
+fini le handling
+commence le handling
+done
+ld
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+done
+st
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 9 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 8 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 7 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 6 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 5 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+done
+add
+IDX OF CODING BYTE (ADD) : 11
+coding_byte du ADD : 3
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+done
+st
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 3
+fini le handling
+commence le handling
+done
+st
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 9 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 8 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 7 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 6 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 5 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 4 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 3 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 2 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 1 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+core->champs[i].to_wait.ctw = 0 && core->champs[i].to_wait.nb_toexe = 4
+fini le handling
+commence le handling
+done
+add
+IDX OF CODING BYTE (ADD) : 15
+coding_byte du ADD : 0
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+done
+fini le handling
+commence le handling
+done
+fini le handling

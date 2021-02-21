@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "lemin.h": "c",
+        "typeinfo": "c",
+        "chrono": "c",
+        "algorithm": "c",
+        "limits": "c"
+    }
+}

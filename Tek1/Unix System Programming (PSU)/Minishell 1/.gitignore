@@ -1,0 +1,7 @@
+*.o
+src/test.c
+my_segfault.c
+seg
+a.out
+my_sh
+*.gc*

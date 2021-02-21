@@ -1,0 +1,9 @@
+asm_real
+*.o
+./asm/asm
+./corewar/corewar
+./test.s
+./test.cor
+./test.log
+./abel.core
+./abel.s

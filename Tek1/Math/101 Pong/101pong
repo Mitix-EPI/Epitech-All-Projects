@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+import sys
+import os
+import math
+
+def print_help():
+    print("USAGE\n    ./101pong x0 y0 z0 x1 y1 z1 n\n\nDESCRIPTION\n    x0 ball abscissa at time t - 1\n    y0 ball ordinate at time t - 1\n    z0 ball altitude at time t - 1\n    x1 ball abscissa at time t\n    y1 ball ordinate at time t\n    z1 ball altitude at time t\n    n time shift (greater than or equal to zero, integer)")
+
+if len(sys.argv) != 8 and len(sys.argv) != 2:
+    sys.exit(84)
+
+if len(sys.argv) == 2:
+    if sys.argv[1] == "-h":
+        print_help()
+        sys.exit(0)
+
+try:
+    x1 = float(sys.argv[1])
+    y1 = float(sys.argv[2])
+    z1 = float(sys.argv[3])
+    x2 = float(sys.argv[4])
+    y2 = float(sys.argv[5])
+    z2 = float(sys.argv[6])
+    n = int(sys.argv[7])
+    if n < 0 :
+        sys.exit(84)
+except:
+    print("error")
+    sys.exit(84)
+
+vx = float(x2 - x1)
+vy = float(y2 - y1)
+vz = float(z2 - z1)
+x3 = float(vx * n + x2)
+y3 = float(vy * n + y2)
+z3 = float(vz * n + z2)
+
+
+print('The velocity vector of the ball is:\n(%.2f' %vx + ', %.2f' %vy +', %.2f' %vz + ')')
+print('At time t + ' + repr(n) + ', ball coordinates will be:\n(%.2f' %x3 + ', %.2f' %y3 + ', %.2f' %z3 + ')')
+if (z1 + z2) < z1 or z1 == z2:
+    print('The ball won\'t reach the paddle.')
+    sys.exit(0)
+else :
+    angle = math.atan(vz/(math.sqrt(math.pow(vx, 2) + math.pow(vy, 2))))
+    if angle < 0:
+        print('The incidence angle is:\n%.2f' %(-angle*(180/math.pi)) + ' degrees')
+        sys.exit(0)
+    else :
+        print('The incidence angle is:\n%.2f' %(angle*(180/math.pi)) + ' degrees')
+        sys.exit(0)
+##Alexandre JUAN a TOUUUUUUUUUT fait!!!!! Ps:Richard is the best

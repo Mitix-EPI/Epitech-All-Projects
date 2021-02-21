@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Epytodo</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}" />
+		<noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/noscript.css') }}" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="content">
+							<div class="inner">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Task</th>
+                                            <th scope="col">Started</th>
+                                            <th scope="col">Ended</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ task[1] }}</td>
+                                            <td>{{ task[2] }}</td>
+                                            <td>{{ task[3] }}</td>
+                                            <td>{{ task[4] }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+								<form action="{{ url_for('user_task_id', task_id=task[0]) }}" method="POST" autocomplete="off">
+									<label for="title"></label>
+									<input type="text" name="title" placeholder="title" id="title">
+									<label for="begin"></label>
+									<input type="text" name="begin" placeholder="begin" id="begin">
+									<label for="end"></label>
+									<input type="text" name="end" placeholder="end" id="end">
+									<label for="status"></label>
+									<input type="text" name="status" placeholder="status" id="status">
+									<div>{% include 'json_flash.html' %}</div>
+									<input type="submit" value="Update">
+								</form>
+							</div>
+                        </div>
+                        <nav>
+							<ul>
+								<form method="post" action="{{ url_for('signout')}}">
+									<li><input type="submit" value="Signout"/></li>
+								</form>
+								<form method="GET" action="{{ url_for('user_task')}}">
+									<li><input type="submit" value="All tasks"/></li>
+                                </form>
+							</ul>
+						</nav>
+			</div>
+
+				<!-- Footer -->
+					<!-- <footer id="footer">
+						<p class="copyright">&copy; Untitled. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+					</footer> -->
+
+			</div>
+
+		<!-- BG -->
+			<div id="bg"></div>
+
+		<!-- Scripts -->
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/browser.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/breakpoints.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+	</body>
+</html>

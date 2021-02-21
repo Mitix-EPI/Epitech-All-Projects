@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+def print_h():
+    print("USAGE\n    ./105torus opt a0 a1 a2 a3 a4 n\n\nDESCRIPTION\n    opt\t      method option:\n\t\t  1 for the bisection method\n\t\t  2 for the Newton's method\n\t\t  3 for the secant method\n    a[0-4]    coefficients of the equation\n    n         precision (the application of the polunomial to the solution should\n\t      be smaller than 10^-n", end = "")
+    sys.exit(0)
+
+def get_arguments(arguments):
+    del arguments[0]
+    arg_list = []
+
+    for i in arguments:
+        try:
+            arg_list.append(int(i))
+        except:
+            sys.stderr.write("Error 84: " + str(i) + " is not a number !\nPlease type './105torus -h' for help.")
+            exit(84)
+
+    if arg_list[0] < 1 or arg_list[0] > 3:
+        sys.stderr.write("Error 84: The first number must be between 1 and 3.\nPlease type './105torus -h' for help.")
+        exit(84)
+    else:
+        if arg_list[-1] <= 0:
+            sys.stderr.write("Error 84: The precision number must be greater than 0.\nPlease type './105torus -h' for help.")
+            exit(84)
+        else:
+            return arg_list
+
+def samesign(a, b):
+    return a * b > 0
+
+def bisection_method(args):
+    listing = []
+    f = lambda x: (args[5] * x**4) + (args[4] * x**3) + (args[3] * x**2) + (args[2] * x) + args[1]
+    a = 0
+    b = 1
+    old_variable = 1
+
+    for i in range(54):
+        midpoint = (a + b) / 2.0
+        if samesign(f(a), f(midpoint)):
+            a = midpoint
+        else:
+            b = midpoint
+        if old_variable == round(midpoint, args[6]):
+            break
+        else:
+            old_variable = round(midpoint, args[6])
+        listing.append(midpoint)
+    if round(listing[-1], args[6]) > 0.9:
+        sys.stderr.write("No solution.\n")
+        exit(84)
+    else:
+        if round(listing[-1], args[6]) == round(listing[-3], args[6]):
+            del listing[-1]
+            del listing[-1]
+        for i in listing:
+            if round(i, args[6]) == i:
+                print("x = %.*g" % (args[6], i))
+            else:
+                print("x = %.*f" % (args[6], i))
+        exit(0)
+
+def Newton(f, Df, x0, epsilon, max_iter):
+    my_list = []
+    my_list.append(0.5)
+    for i in range(1, max_iter):
+        if Df(x0) == 0:
+            sys.stderr.write("Error: Division by 0.\n")
+            exit(84)
+        h = f(x0) / Df(x0)
+        x1 = x0 - h
+        # print("h = ", h)
+        # print("epsi = ", epsilon)
+        if abs(h) < epsilon:
+            my_list.append(x1)
+            break
+        my_list.append(x1)
+        x0 = x1
+    if round(my_list[-1], args[6]) == round(my_list[-2], args[6]):
+        del my_list[-1]
+    for i in my_list:
+        if round(i, args[6]) == i:
+            print("x = %.*g" % (args[6], i))
+        else :
+            print("x = %.*f" % (args[6], i))
+
+
+def newton_method(args):
+    f = lambda x : (args[5] * x**4) + (args[4] * x**3) + (args[3] * x**2) + (args[2] * x) + args[1]
+    Df = lambda x : (4 * args[5] * x**3) + (3 * args[4] * x**2) + (2 * args[3] * x) + args[2]
+    x0 = 0.5
+    max_iter = 3
+    Newton(f, Df, x0, 10 ** (-args[6]), 1000)
+
+def secant(f, x0, x1, tol, max_iterations=100):
+    init_x0 = x0
+    init_x1 = x1
+    fx0 = f(x0)
+    fx1 = f(x1)
+    for i in range(max_iterations):
+        if abs(fx1) < tol:
+            return x1
+        if fx1 - fx0 == 0:
+            sys.stderr.write("Error: Division by 0\n")
+            exit(84)
+        x2 = (x0 * fx1 - x1 * fx0) / (fx1 - fx0)
+        x0,  x1  = x1,  x2
+        fx0, fx1 = fx1, f(x2)
+        if round(x1, args[6]) == x1:
+            print("x = %.*g" % (args[6], x1))
+        else:
+            print("x = %.*f" % (args[6], x1))
+    if round(x1, args[6]) == x1:
+        print("x = %.*g" % (args[6], x1))
+    else:
+        print("x = %.*f" % (args[6], x1))
+
+def secant_method(args):
+    f = lambda x : (args[5] * x**4) + (args[4] * x**3) + (args[3] * x**2) + (args[2] * x) + args[1]
+    secant(f, 0, 1, 10**(-args[6]), max_iterations = 100)
+
+args = []
+
+if len(sys.argv) == 2:
+    if sys.argv[1] == "-h":
+        print_h()
+    else:
+        sys.stderr.write("Error 84: Not enough arguments.\nPlease type './105torus -h' for help.\n")
+        exit(84)
+elif len(sys.argv) == 8:
+    args = get_arguments(sys.argv)
+else:
+    sys.stderr.write("Error 84: Not enough arguments.\nPlease type './105torus -h' for help.\n")
+    exit(84)
+
+if int(args[0]) == 1:
+    bisection_method(args)
+elif int(args[0]) == 2:
+    newton_method(args)
+elif int(args[0]) == 3:
+    secant_method(args)
+else:
+    sys.stderr.write("Error 84: Inexistant option. \nPlease type './105torus -h' for help.\n")
+    exit(84)

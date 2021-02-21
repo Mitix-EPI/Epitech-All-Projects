@@ -1,0 +1,203 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+def print_h():
+    print("USAGE\n    ./104intersection opt xp yp zp xv yv zv p\n\nDESCRIPTION\n    opt\t\t    surface option: 1 for a sphere, 2 for a cylinder, 3 for a cone\n    (xp, yp, zp)    coordinates of a point by which the light ray passes through\n    (xv, yv, zv)    coordinates of a vector parallel to the light ray\n    p\t\t    parameter: radius of the sphere, radius of the cylinder, or\n\t\t    angle formed by the cone and the Z-axis", end = "")
+    sys.exit(0)
+
+def get_arguments(arguments):
+    del arguments[0]
+    arg_list = []
+
+    for i in arguments:
+        try:
+            arg_list.append(int(i))
+        except:
+            sys.stderr.write("Error 84: " + str(i) + " is not a number !\nPlease type './104intersection -h' for help.")
+            exit(84)
+
+    if arg_list[0] < 1 or arg_list[0] > 3:
+        sys.stderr.write("Error 84: The first number must be between 1 and 3.\nPlease type './104intersection -h' for help.")
+        exit(84)
+    else:
+        return arg_list
+
+def sphere(arguments):
+    print("Sphere of radius " + str(arguments[-1]))
+    print("Line passing through the point (" + str(arguments[1]) + ", " + str(arguments[2]) + ", " + str(arguments[3]) + ") and parallel to the vector (" + str(arguments[4]) + ", " + str(arguments[5]) + ", " + str(arguments[6]) + ")")
+    a = (float(arguments[4]) ** 2) + (float(arguments[5]) ** 2) + (float(arguments[6]) ** 2)
+    b = (2 * float(arguments[1]) * float(arguments[4])) + (2 * float(arguments[2]) * float(arguments[5])) + (2 * float(arguments[3]) * float(arguments[6]))
+    c = (float(arguments[1]) ** 2) + (float(arguments[2]) ** 2) + (float(arguments[3]) ** 2) - (float(arguments[7]) ** 2)
+    delta = float(b) * float(b) - 4 * float(a) * float(c)
+    if (delta < 0):
+        print("No intersection point.")
+    if (delta == 0):
+        x1 = ((-float(b)) / (2 * float(a)))
+        print("1 intersection point:")
+        sol1 = float(arguments[1]) + float(x1) * float(arguments[4])
+        sol2 = float(arguments[2]) + float(x1) * float(arguments[5])
+        sol3 = float(arguments[3]) + float(x1) * float(arguments[6])
+        print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+    if (delta > 0):
+        print("2 intersection points:")
+        # try :
+        x1 = ((-b - (math.sqrt(float(delta)))) / (2 * a))
+        x2 = ((-b + (math.sqrt(float(delta)))) / (2 * a))
+        # except:
+        #     x1 = ((-float(arguments[2])) - float(math.sqrt(delta)))
+        #     x2 = ((-float(arguments[2])) + float(math.sqrt(delta)))
+        sol1 = float(arguments[1]) + (float(x1) * float(arguments[4]))
+        sol2 = float(arguments[2]) + (float(x1) * float(arguments[5]))
+        sol3 = float(arguments[3]) + (float(x1) * float(arguments[6]))
+        sol4 = float(arguments[1]) + (float(x2) * float(arguments[4]))
+        sol5 = float(arguments[2]) + (float(x2) * float(arguments[5]))
+        sol6 = float(arguments[3]) + (float(x2) * float(arguments[6]))
+        if (x1 > x2):
+            print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+            print("(%.3f" %float(sol4) + ", %.3f" %float(sol5) + ", %.3f" %float(sol6) +")")
+        else:
+            print("(%.3f" %float(sol4) + ", %.3f" %float(sol5) + ", %.3f" %float(sol6) +")")
+            print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+    sys.exit(0)
+
+def cone(arguments):
+    print("Cone with a " + str(arguments[-1]) + " degree angle")
+    #arguments[7] = math.radians(arguments[7])
+    print("Line passing through the point (" + str(arguments[1]) + ", " + str(arguments[2]) + ", " + str(arguments[3]) + ") and parallel to the vector (" + str(arguments[4]) + ", " + str(arguments[5]) + ", " + str(arguments[6]) + ")")
+    # print(arguments[4])
+    # print(arguments[5])
+    # print(arguments[6])
+    # print(arguments[7])
+    # print(math.tan(float(arguments[7])))
+
+    # a = (float(arguments[4]) ** 2) + (float(arguments[5]) ** 2) - ((float(arguments[6]) * math.tan(math.radians(arguments[7])))** 2)
+    # b = (2 * float(arguments[1]) * float(arguments[4])) + (2 * float(arguments[2]) * float(arguments[5])) - ((2 * float(arguments[3]) * float(arguments[6])) * ((math.tan(float(math.radians(arguments[7]))))** 2))
+    # c = float(arguments[1]) ** 2 + float(arguments[2]) ** 2 - ((float(arguments[3]) ** 2) * (math.tan(float(arguments[7])) ** 2))
+    p = math.radians(arguments[7])
+    a = (arguments[4]**2) + (arguments[5]**2) - (arguments[6] * math.tan(p))**2
+    b = 2 * arguments[1] * arguments[4] + 2 * arguments[2] * arguments[5] - 2 * arguments[3] * arguments[6] * (math.tan(p))**2
+    c = (arguments[1]**2) + (arguments[2]**2) - (arguments[3]**2) * (math.tan(p))**2
+
+    delta = float(b)**2 - (4 * float(a) * float(c))
+
+    # print(a)
+    # print(b)
+    # print(c)
+    # print(delta)
+    #print(a)
+    if (delta < 0 or (a == 0 and b == 0 and c != 0)):
+        print("No intersection point.")
+        sys.exit(0)
+    if (a == 0 and b == 0 and c == 0):
+        print("There is an infinite number of intersection points.")
+        sys.exit(0)
+    else :
+        lambd = float(-c) / float(b)
+        print("1 intersection point:")
+        sol1 = float(arguments[1]) + (float(lambd) * float(arguments[4]))
+        sol2 = float(arguments[2]) + (float(lambd) * float(arguments[5]))
+        sol3 = float(arguments[3]) + (float(lambd) * float(arguments[6]))
+        print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+    #print(delta)
+    if (delta == 0):
+        x1 = ((-float(b)) / (2 * float(a)))
+        print("1 intersection point:")
+        sol1 = float(arguments[1]) + (float(x1) * float(arguments[4]))
+        sol2 = float(arguments[2]) + (float(x1) * float(arguments[5]))
+        sol3 = float(arguments[3]) + (float(x1) * float(arguments[6]))
+        print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+    if (delta > 0):
+        print("2 intersection points:")
+        # try :
+        x1 = ((-b - (math.sqrt(float(delta)))) / (2 * a))
+        x2 = ((-b + (math.sqrt(float(delta)))) / (2 * a))
+        # except:
+        #     x1 = ((-float(arguments[2])) - float(math.sqrt(delta)))
+        #     x2 = ((-float(arguments[2])) + float(math.sqrt(delta)))
+        sol1 = float(arguments[1]) + (float(x1) * float(arguments[4]))
+        sol2 = float(arguments[2]) + (float(x1) * float(arguments[5]))
+        sol3 = float(arguments[3]) + (float(x1) * float(arguments[6]))
+        sol4 = float(arguments[1]) + (float(x2) * float(arguments[4]))
+        sol5 = float(arguments[2]) + (float(x2) * float(arguments[5]))
+        sol6 = float(arguments[3]) + (float(x2) * float(arguments[6]))
+        if (x1 > x2):
+            print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+            print("(%.3f" %float(sol4) + ", %.3f" %float(sol5) + ", %.3f" %float(sol6) +")")
+        else:
+            print("(%.3f" %float(sol4) + ", %.3f" %float(sol5) + ", %.3f" %float(sol6) +")")
+            print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+    sys.exit(0)
+
+def cylinder(arguments):
+    print("Cylinder of radius " + str(arguments[-1]))
+    print("Line passing through the point (" + str(arguments[1]) + ", " + str(arguments[2]) + ", " + str(arguments[3]) + ") and parallel to the vector (" + str(arguments[4]) + ", " + str(arguments[5]) + ", " + str(arguments[6]) + ")")
+    a = (float(arguments[4]) ** 2) + (float(arguments[5]) ** 2)
+    b = (2 * float(arguments[1]) * float(arguments[4])) + (2 * float(arguments[2]) * float(arguments[5]))
+    c = (float(arguments[1]) ** 2) + (float(arguments[2]) ** 2) - (float(arguments[-1]) ** 2)
+    delta = float(b) * float(b) - 4 * float(a) * float(c)
+    if a == 0:
+        if arguments[6] == 0:
+            print("jsp")
+        else :
+            if c == 0:
+                print("There is an infinite number of intersection points.")
+                sys.exit(0)
+    # print(a)
+    # print(b)
+    # print(c)
+    # print(delta)
+    if (delta < 0):
+        print("No intersection point.")
+    if (delta == 0):
+        x1 = ((-float(b)) / (2 * float(a)))
+        print("1 intersection point:")
+        sol1 = float(arguments[1]) + (float(x1) * float(arguments[4]))
+        sol2 = float(arguments[2]) + (float(x1) * float(arguments[5]))
+        sol3 = float(arguments[3]) + (float(x1) * float(arguments[6]))
+        print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+    if (delta > 0):
+        print("2 intersection points:")
+        x1 = ((-b - (math.sqrt(float(delta)))) / (2 * a))
+        x2 = ((-b + (math.sqrt(float(delta)))) / (2 * a))
+        # print(x1)
+        # print(x2)
+        # print(math.sqrt(float(delta)))
+        sol1 = float(arguments[1]) + (float(x1) * float(arguments[4]))
+        sol2 = float(arguments[2]) + (float(x1) * float(arguments[5]))
+        sol3 = float(arguments[3]) + (float(x1) * float(arguments[6]))
+        sol4 = float(arguments[1]) + (float(x2) * float(arguments[4]))
+        sol5 = float(arguments[2]) + (float(x2) * float(arguments[5]))
+        sol6 = float(arguments[3]) + (float(x2) * float(arguments[6]))
+        if (x1 > x2):
+            print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+            print("(%.3f" %float(sol4) + ", %.3f" %float(sol5) + ", %.3f" %float(sol6) +")")
+        else:
+            print("(%.3f" %float(sol4) + ", %.3f" %float(sol5) + ", %.3f" %float(sol6) +")")
+            print("(%.3f" %float(sol1) + ", %.3f" %float(sol2) + ", %.3f" %float(sol3) +")")
+    sys.exit(0)
+
+args = []
+
+if len(sys.argv) == 2:
+    if sys.argv[1] == "-h":
+        print_h()
+elif len(sys.argv) == 9:
+    args = get_arguments(sys.argv)
+else:
+    sys.stderr.write("Error 84: Not enough arguments.\nPlease type './104intersection -h' for help.\n")
+    exit(84)
+
+if (args[-1] <= 0 or args[-1] >= 90):
+    sys.stderr.write("Error 84: Angle or radius (= RAYON) can't be negative or null.\n")
+    exit(84)
+if (args[4] == 0 and args[5] == 0 and args[6] == 0):
+    sys.stderr.write("Error 84: Direction vector is null.\n")
+    exit(84)
+if (args[0] == 1):
+    sphere(args)
+elif (args[0] == 2):
+    cylinder(args)
+elif (args[0] == 3):
+    cone(args)

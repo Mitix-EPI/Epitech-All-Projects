@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "my.h": "c",
+        "my_printf.h": "c",
+        "solver.h": "c",
+        "generator.h": "c"
+    }
+}

@@ -1,0 +1,5 @@
+.vscode/*
+lib/libmy.a
+*.o
+42sh
+.42sh*

@@ -1,0 +1,4 @@
+*.o
+map_test
+test_map
+old_solver

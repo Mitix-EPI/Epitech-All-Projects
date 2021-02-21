@@ -1,0 +1,214 @@
+#!/usr/bin/env python
+
+import pygame
+from random import *
+from pygame.locals import *
+
+sound = "assets/automatica.mp3"
+
+pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load(sound)
+pygame.mixer.music.play()
+
+myfont = pygame.font.SysFont("Comic Sans MS", 140)
+myfont2 = pygame.font.SysFont("Comic Sans MS", 60)
+
+window = pygame.display.set_mode((1800, 1000))
+pygame.display.set_caption('101pong')
+
+white = (255, 255, 255)
+black = (0, 0, 0)
+yellow = (255, 255, 0)
+red = (255, 0, 0)
+blue = (0, 0, 255)
+FPS = 60
+answer = True
+high_score = 0
+score_a = 0;
+score_b = 0;
+
+background = pygame.image.load("assets/black.png").convert()
+paddle1 = pygame.image.load("assets/bar1.png").convert_alpha()
+paddle2 = pygame.image.load("assets/bar2.png").convert_alpha()
+ball = pygame.image.load("assets/ball.png").convert_alpha()
+
+def my_continue() :
+    k = pygame.key.get_pressed()
+    boucle = True
+    while boucle :
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT or k[K_ESCAPE]:
+                exit()
+            if event.type == pygame.MOUSEBUTTONUP :
+                if (pygame.mouse.get_pos()[0] >= 790 and pygame.mouse.get_pos()[0] <= 855 and pygame.mouse.get_pos()[1] >= 650 and pygame.mouse.get_pos()[1] <= 730) :
+                    #touche le Y
+                    boucle = False
+                if (pygame.mouse.get_pos()[0] >= 940 and pygame.mouse.get_pos()[0] <= 1000 and pygame.mouse.get_pos()[1] >= 650 and pygame.mouse.get_pos()[1] <= 730) :
+                    #touche le N
+                    exit(0)
+        k = pygame.key.get_pressed() #facilite le fait d ecrire les touches touchees ou non, c est just un raccourci
+        if k[K_ESCAPE] :
+            exit(1)
+        window.fill(black)
+        pygame.display.set_caption("GAME OVER")
+        cache = "HIGH SCORE : " + str(high_score)
+        high_score_text = myfont.render(cache, 1, yellow)
+        text1 = myfont.render("GAME OVER", 1, red)
+        text2 = myfont.render("CONTINUE ?", 1, white)
+        text3 = myfont.render("       Y / N", 1, blue)
+        window.blit(high_score_text, (550, 150))
+        window.blit(text1, (600, 350))
+        window.blit(text2, (600, 550))
+        window.blit(text3, (600, 650))
+        pygame.display.flip() #update la fenetre
+
+def my_start() :
+    k = pygame.key.get_pressed()
+    boucle = True
+    while boucle :
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT or k[K_ESCAPE]:
+                exit()
+            if event.type == pygame.MOUSEBUTTONUP :
+                if (pygame.mouse.get_pos()[0] >= 600 and pygame.mouse.get_pos()[0] <= 930 and pygame.mouse.get_pos()[1] >= 560 and pygame.mouse.get_pos()[1] <= 630) :
+                    #touche le JOUER
+                    boucle = False
+                if (pygame.mouse.get_pos()[0] >= 600 and pygame.mouse.get_pos()[0] <= 1030 and pygame.mouse.get_pos()[1] >= 660 and pygame.mouse.get_pos()[1] <= 730) :
+                    #touche le QUITTER
+                    exit(0)
+        k = pygame.key.get_pressed() #facilite le fait d ecrire les touches touchees ou non, c est just un raccourci
+        if k[K_ESCAPE] :
+            exit(1)
+        window.fill(black)
+        pygame.display.set_caption("101pong")
+        text1 = myfont.render("QUITTER", 1, red)
+        text3 = myfont.render("JOUER", 1, blue)
+        window.blit(text3, (600, 550))
+        window.blit(text1, (600, 650))
+        pygame.display.flip() #update la fenetre
+
+def print_score(score_a, score_b) :
+    str_a = str(score_a)
+    str_b = str(score_b)
+    text_a = myfont.render(str_a, 1, white)
+    text_b = myfont.render(str_b, 1, white)
+    window.blit(text_a, (800, 500))
+    window.blit(text_b, (950, 500))
+
+my_start()
+while (answer == True) :
+    pygame.display.set_caption('101pong')
+    pos_paddle1 = paddle1.get_rect(topleft = (10, 500))
+    pos_paddle2 = paddle2.get_rect(topleft = (1755, 500))
+    rand = int(random()* 400)
+    pos_ball = ball.get_rect(topleft = (22, rand))
+
+
+    head_paddle1 = 490 #le fait de connaitre le debut et la fin du paddle nous permet
+    tail_paddle1 = 660 #de connaitre la zone de touche de la ball pour que ca touche
+
+    head_paddle2 = 490 #la meme chose ici
+    tail_paddle2 = 660
+
+    x_ball = 22
+    y_ball = rand #on fait commencer la balle a un y aleatoire
+
+    echange = 0
+
+    speed_paddle = 9
+    speed_ball= 7
+    speed_activation = False
+
+    behaviour_ball_touching_paddle = 0 #0 vaut le paddle de gauche et 1 vaut le paddle de droite
+    behaviour_ball_touching_border = 0 #0 vaut descendre et 1 vaut monter
+
+    clock = pygame.time.Clock() #utilise pour mettre les fps
+    window_is_open = True
+
+    while window_is_open :
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit(1)
+        k = pygame.key.get_pressed() #facilite le fait d ecrire les touches touchees ou non, c est just un raccourci
+        if k[K_ESCAPE] :
+            exit(1)
+        if k[K_z] and head_paddle1 > -23:
+            pos_paddle1 = pos_paddle1.move(0, -speed_paddle)
+            head_paddle1 -= speed_paddle
+            tail_paddle1 -= speed_paddle
+        if k[K_s] and tail_paddle1 < 968:
+            pos_paddle1 = pos_paddle1.move(0, speed_paddle)
+            head_paddle1 += speed_paddle
+            tail_paddle1 += speed_paddle
+        if k[K_UP] and head_paddle2 > -23:
+            pos_paddle2 = pos_paddle2.move(0, -speed_paddle)
+            head_paddle2 -= speed_paddle
+            tail_paddle2 -= speed_paddle
+        if k[K_DOWN] and tail_paddle2 < 968:
+            pos_paddle2 = pos_paddle2.move(0, speed_paddle)
+            head_paddle2 += speed_paddle
+            tail_paddle2 += speed_paddle
+
+        if x_ball <= 20 and head_paddle1 <= y_ball and y_ball <= tail_paddle1 : #la balle touche le paddle 1
+            #la balle touche le paddle 1
+            behaviour_ball_touching_paddle = 0
+            echange += 1
+            if (echange % 2 == 0) :
+                speed_ball += 1
+                speed_paddle += 2
+        if x_ball >= 1735 and head_paddle2 <= y_ball and y_ball <= tail_paddle2 : #la balle touche le paddle 2
+            #la balle touche le paddle 2
+            behaviour_ball_touching_paddle = 1
+            echange += 1
+            speed_ball += 1
+            speed_paddle += 1
+        if x_ball <= -20 or x_ball >= 1770 : #la balle est en dehors de la zone donc Game over
+            if x_ball <= -20 :
+                score_b += 1
+            if x_ball >= 1770 :
+                score_a += 1
+            break
+
+        if y_ball < -3:
+            #la balle touche le plafond donc la balle descend
+            behaviour_ball_touching_border = 0
+        if y_ball > 957:
+            #la balle touche le sol donc la balle monte
+            behaviour_ball_touching_border = 1
+
+        if behaviour_ball_touching_paddle == 0 and behaviour_ball_touching_border == 0 :
+            pos_ball = pos_ball.move(speed_ball, speed_ball)
+            x_ball += speed_ball
+            y_ball += speed_ball
+        if behaviour_ball_touching_paddle == 0 and behaviour_ball_touching_border == 1 :
+            pos_ball = pos_ball.move(speed_ball, -speed_ball)
+            x_ball += speed_ball
+            y_ball -= speed_ball
+        if behaviour_ball_touching_paddle == 1 and behaviour_ball_touching_border == 0 :
+            pos_ball = pos_ball.move(-speed_ball, speed_ball)
+            x_ball -= speed_ball
+            y_ball +=speed_ball
+        if behaviour_ball_touching_paddle == 1 and behaviour_ball_touching_border == 1 :
+            pos_ball = pos_ball.move(-speed_ball, -speed_ball)
+            x_ball -= speed_ball
+            y_ball -= speed_ball
+
+        window.fill(black)
+        pygame.draw.line(window, white, [900, 0], [900, 1000], 5)
+        s = "ECHANGES(S) : " + str(echange)
+        text = myfont2.render(s, 1, yellow)
+        window.blit(text, (1000, 10))
+        print_score(score_a, score_b)
+        window.blit(ball, (pos_ball))
+        window.blit(pygame.transform.scale(paddle1, (50, 200)), (pos_paddle1)) #resize pour que ce soit plus grand les sprites
+        window.blit(pygame.transform.scale(paddle2, (50, 200)), (pos_paddle2))
+        pygame.display.flip() #update la fenetre
+        clock.tick(FPS) #limit a 60 frames par secondes
+
+    if high_score < echange :
+        high_score = echange
+
+    my_continue() #display continue menu
+
+pygame.quit()

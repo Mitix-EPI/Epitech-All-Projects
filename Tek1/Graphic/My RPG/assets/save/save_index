@@ -1,0 +1,26 @@
+status:
+obj left:
+obj top:
+quest act:
+life:
+executed tuto:
+quest x:
+quest y:
+level:
+fps:
+quest tmp:
+nb kills:
+nb wins:
+player fight pos x:
+player fight pos y:
+player fight life:
+for spells
+    sec:
+    damage:
+vitesse enem:
+nb enn:
+for enn
+    life enn:
+    pos x enn:
+    pos y enn:
+    tmp enn:
