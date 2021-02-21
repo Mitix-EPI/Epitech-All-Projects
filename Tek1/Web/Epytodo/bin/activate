@@ -46,7 +46,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV='/home/alexandre/EPITECH/Tek1/WEB/WEB_epytodo_2019'
+VIRTUAL_ENV='/home/alexandre/Blih est cassé/WEB_epytodo_2019'
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

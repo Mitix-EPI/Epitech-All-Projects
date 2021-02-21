@@ -57,7 +57,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV '/home/alexandre/EPITECH/Tek1/WEB/WEB_epytodo_2019'
+set -gx VIRTUAL_ENV '/home/alexandre/Blih est cassé/WEB_epytodo_2019'
 
 # https://github.com/fish-shell/fish-shell/issues/436 altered PATH handling
 if test (echo $FISH_VERSION | head -c 1) -lt 3
