@@ -1,8 +1,9 @@
 # WEB_epytodo_2019
 
 COLLABORATION:
-@Cedani
-@CyrilGrosjean
+- [Aboh Daniel Cedrick Kakou](https://github.com/Cedani)
+
+- [Cyril Grosjean](https://github.com/CyrilGrosjean)
 
 EPyTodo is a project which you could rely on in the future.
 You'll use some tools to help you (framework) in order to implement quickly some part of your project.
