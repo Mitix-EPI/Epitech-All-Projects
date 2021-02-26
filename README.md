@@ -160,7 +160,7 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 [105 Torus]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek1/Math/105%20Torus
 
-[equation 4th degree]: https://latex.codecogs.com/svg.latex?\&space;ax^4+bx^3+cx^2+dx^1+e=0
+[equation 4th degree]: https://latex.codecogs.com/gif.latex?ax^4&plus;bx^3&plus;cx^2&plus;dx^1&plus;e=0
 
 [The bisection method]: https://en.wikipedia.org/wiki/Bisection_method
 
