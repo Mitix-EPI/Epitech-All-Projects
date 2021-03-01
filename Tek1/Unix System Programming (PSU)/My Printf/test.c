@@ -30,6 +30,6 @@ int main(int ac, char **av)
     // tebo[3] = 8;
     // tebo[4] = 0;
     // my_printf("%t", tebo);
-
+    my_printf("%h");
     my_printf("Hello %r!", "World");
 }
