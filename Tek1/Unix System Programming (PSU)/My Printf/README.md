@@ -2,7 +2,7 @@
 
 # My Printf
 
-![Badge Mark](https://img.shields.io/badge/Module%20Mark-A-%2372FA08.svg?&style=for-the-badge&logoColor=black)
+![Badge Mark](https://img.shields.io/badge/Module%20Mark-B-%23B1FA08.svg?&style=for-the-badge&logoColor=black)
 
 ## Overview
 
