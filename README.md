@@ -21,7 +21,7 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 | [Push Swap] | C | Create an algorithm to sort list of number as fast as possible | ![Medium Difficulty] |
 | [Corewar] | C / ASM | Create Compiler of pseudo ASM code and arena to play [Corewar Game] | ![Hard Difficulty] | :star: |
 | [My Printf] | C | Recode the [printf] command | ![Easy Difficulty] | :star: |
-| [My Sokoban] | C | Create [Sokoban] mini game | ![Easy Difficulty] | :star: |
+| [My Sokoban] | C | Create [Sokoban] mini game | ![Easy Difficulty] | |
 | [Dante] | C | Create maze generator and solver algorithm | ![Medium Difficulty] |
 | [GetNextLine (GNL)] | C | Recode GNL function with only one file | ![Medium Difficulty] |
 | [Lem-In] | C | Reproduce [Lemmings] game creating data structures (linked lists) and path finding algorithm | ![Hard Difficulty] |
