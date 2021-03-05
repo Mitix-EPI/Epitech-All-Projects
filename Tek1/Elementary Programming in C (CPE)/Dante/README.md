@@ -36,3 +36,6 @@ DESCRIPTION
 USAGE
     ./solver/solver maze.txt
 ```
+
+## COLLABORATION
+- [Rafik Merzouk](https://github.com/Belkadafi)
