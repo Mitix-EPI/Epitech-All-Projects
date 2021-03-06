@@ -27,7 +27,7 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 | [Lem-In] | C | Reproduce [Lemmings] game creating data structures (linked lists) and path finding algorithm | ![Hard Difficulty] |
 | [Matchstick] | C | Create 1 vs :robot: matchsticks game | ![Easy Difficulty] |
 | [Tetris] | C | Create [Tetris game] | ![Easy Difficulty] |  |
-| [Navy] | C | Create [Battleship Game] with two terminals thanks to signals | ![Easy Difficulty] | :star: |
+| [Navy] | C | Create [Battleship Game] with two terminals thanks to signals | ![Easy Difficulty] | |
 | [My Ls] | C | Recode [ls bash command] | ![Easy Difficulty] |
 | [Minishell 1] | C | Creation of a simple shell which executes bash commands one by one | ![Easy Difficulty] |
 | [Minishell 2] | C | Creation of a shell which includes [pipelines] and [redirections] (using [binary tree]) | ![Medium Difficulty] |
