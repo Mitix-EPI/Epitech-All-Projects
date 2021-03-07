@@ -1,4 +1,4 @@
-<p align="center"><img src="../../../images/minishell.png" alt="Tetris"></p>
+<p align="center"><img src="../../../images/minishell.png" alt="Minishell"></p>
 
 # Minishell 1
 
