@@ -12,4 +12,4 @@ Minishell 2 is composed of:
  - Environment variables
  - `cd` command
  - Exec environment commands
- - `||` `&&` `>` `>>` `<<` `<` separators
+ - `|` `&` `>` `>>` `<<` `<` separators
