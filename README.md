@@ -11,7 +11,6 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 #### Algorithm projects:
 
-:warning: *Collaborations README are coming* :warning:
 
 | Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) | Has bonus |
 |    :---:     |    :---:    |       :---:       | :---: | :---: |
