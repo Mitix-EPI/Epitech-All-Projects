@@ -96,8 +96,6 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 #### Graphical projects
 
-:warning: *Collaborations README are coming* :warning:
-
 *All graphical projects are developped in C with the CSFML graphical library.*
 
 *The projects are sorted from the first to the last.*
