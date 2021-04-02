@@ -174,6 +174,6 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 | [N4S] | Introduction to A.I. | C | Build an Intelligence Artificial to drive a car in any `CoppeliaSim Edu` map with obstacles thanks to the `CoppeliaSim` API|
 | [EpyTodo] | Introduction to WEB | Pythons / HTML / CSS / Javascript / SQL | Create Front and Back website with Database storage with mySQL and Web Server (Flask). The server implements a MVC architecture. An API is created to securely :lock: connect the website and the database. EpyTodo is a website where you're able to handle all the tasks you need to do easily. I'm very proud of this project because it was my first time I develop a website and the result (UX and how it works) is very impressive !|
 
-[N4S]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek1/Introduction%20to%20A.I./N4S
+[N4S]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek1/Introduction%20to%20AI/N4S
 
 [EpyTodo]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek1/Web/Epytodo
