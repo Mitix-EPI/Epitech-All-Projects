@@ -23,4 +23,4 @@ The N4S's goal is to develop an A.I. ables to drive any map, the fastest possibl
 
 ## VISULATION
 
-![](../../images/N4S.gif)
+![](../../../images/N4S.gif)
