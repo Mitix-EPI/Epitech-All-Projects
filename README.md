@@ -100,6 +100,8 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 *The projects are sorted from the first to the last.*
 
+I obtained `A` marks for both of my Tek1 firsts semesters.
+
 | Projects Names | Descriptions | Duration (days) |
 |     :---:      |    :---:    |      :---:      |
 | [My Hunter] | Reproduce [Duck Hunt] game :duck::gun:. Scores, target, ennemies and progressive difficulty are implemented in the game. I also add my touch of fun by adding references to [JUL], the famous french rapper. The game is very fun to play. Many people in the promotion tried to beat their scores ! | :two::four: |
@@ -137,6 +139,8 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 *The projects are sorted from the first to the last.*
 
+I obtained `A` mark on my Tek1 math semester.
+
 | Projects Names | Quick Description | Has bonus |
 |      :---:     |         :---:     |    :---:  |
 | [101 Pong] | Program which calcs the velocity vector of the [Pong] ball, the ball coordinates in `t + n` and his incidence angle. *BONUS: Real pong game with pygame lib* | :star: |
@@ -167,7 +171,6 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 
 #### Others
 
-:warning: *Collaborations README are coming* :warning:
 
 | Projects Names | Module | Language(s) | Description |
 |      :---:     |  :---: |    :---:    |    :---:    |
