@@ -1,0 +1,9 @@
+job-dsl:1.77
+configuration-as-code:1.47
+credentials:2.3.15
+cloudbees-folder:6.15
+github:1.33.1
+structs:1.22
+script-security:1.76
+role-strategy:3.1.1
+ws-cleanup:0.38

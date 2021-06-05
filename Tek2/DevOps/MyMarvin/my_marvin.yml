@@ -1,0 +1,72 @@
+jenkins:
+  systemMessage: "Welcome to the Chocolatine-Powered Marvin Jenkins Instance."
+  remotingSecurity:
+    enabled: true
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "chocolateen"
+          name: "Hugo"
+          description: "Hugo User"
+          password: "${USER_CHOCOLATEEN_PASSWORD}"
+        - id: "vaugie_g"
+          name: "Garance"
+          description: "Garance User"
+          password: "${USER_VAUGIE_G_PASSWORD}"
+        - id: "i_dont_know"
+          name: "Jeremy"
+          description: "Jeremy User"
+          password: "${USER_I_DONT_KNOW_PASSWORD}"
+        - id: "nasso"
+          name: "Nassim"
+          description: "Nassim User"
+          password: "${USER_NASSO_PASSWORD}"
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+          - name: "admin"
+            description: "Marvin master"
+            assignments:
+              - "chocolateen"
+            permissions:
+              - "Overall/Administer"
+          - name: "ape"
+            description: "Pedagogical team member"
+            assignments:
+              - "i_dont_know"
+            permissions:
+              - "Overall/Read"
+              - "Job/Build"
+              - "Job/Workspace"
+              - "Job/Read"
+          - name: "gorilla"
+            description: "Group Obsessively Researching Innovation Linked to Learning and Accomplishment"
+            assignments:
+              - "vaugie_g"
+            permissions:
+              - "Overall/Read"
+              - "Job/Create"
+              - "Job/Workspace"
+              - "Job/Build"
+              - "Job/Configure"
+              - "Job/Delete"
+              - "Job/Move"
+              - "Job/Cancel"
+              - "Job/Read"
+          - name: "assist"
+            description: "Assistant"
+            assignments:
+              - "nasso"
+            permissions:
+              - "Overall/Read"
+              - "Job/Read"
+              - "Job/Workspace"
+
+security:
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+
+jobs:
+  - file: ./job_dsl.groovy
