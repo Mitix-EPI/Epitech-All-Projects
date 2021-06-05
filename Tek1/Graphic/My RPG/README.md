@@ -39,7 +39,7 @@ Download [Windows version](Windows/exe%20rpg%202) ! (download all folder and exe
 
 ---
 
-## Richard Habimana
+## Richard Depierre
 <img align="right" width="100" height="100" src="images/rich.jpeg">
 [Github](https://github.com/Richard-DEPIERRE)
 

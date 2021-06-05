@@ -45,7 +45,7 @@ void create_msg_and_txt_end_script(end_script_t *end)
     end->text->pos = (sfVector2f) {520, 570};
     end->text->size = 20;
     make_text(end->text, "Thanks for playing\n\n\n\t\t\t\t\tCreated by \
-Richard Habimana, Alexandre Juan, Rafik Merzouk and Tom Seiguin", path);
+Richard Depierre, Alexandre Juan, Rafik Merzouk and Tom Seiguin", path);
     sfText_setCharacterSize(end->text->text, 20);
 }
 
