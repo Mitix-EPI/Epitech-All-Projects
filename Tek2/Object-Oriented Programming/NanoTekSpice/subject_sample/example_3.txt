@@ -1,0 +1,46 @@
+~/B-OOP-400> cat -e clock.nts
+.chipsets:$
+clock   cl$
+output  out$
+.links:$
+out:1   cl:1$
+~/B-OOP-400> ./nanotekspice clock.nts
+> *display*
+tick: 0
+input(s):
+  cl: U
+output(s):
+  out: U
+> *cl=0*
+> *display*
+tick: 0
+input(s):
+  cl: U
+output(s):
+  out: U
+> *simulate*
+> *display*
+tick: 1
+input(s):
+  cl: 0
+output(s):
+  out: 0
+> *simulate*
+> *display*
+tick: 2
+input(s):
+  cl: 1
+output(s):
+  out: 1
+> *simulate*
+> *simulate*
+> *simulate*
+> *display*
+tick: 5
+input(s):
+  cl: 0
+output(s):
+  out: 0
+> *(CTRL+D)*
+~/B-OOP-400> echo $?
+0

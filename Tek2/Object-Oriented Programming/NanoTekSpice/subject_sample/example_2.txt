@@ -1,0 +1,10 @@
+~/B-OOP-400> cat -e bad.nts
+.chipsets:$
+input   i$
+output  o$
+.links:$
+a:1     o:1$
+~/B-OOP-400> ./nanotekspice bad.nts
+Unknow component name 'a'.
+~/B-OOP-400> echo $?
+84
