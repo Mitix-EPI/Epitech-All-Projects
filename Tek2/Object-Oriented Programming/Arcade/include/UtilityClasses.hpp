@@ -1,0 +1,7 @@
+#include "../src/UtilityClasses/Vector2i.hpp"
+#include "../src/UtilityClasses/Vector2f.hpp"
+#include "../src/UtilityClasses/Vector3i.hpp"
+#include "../src/UtilityClasses/Object.hpp"
+#include "../src/UtilityClasses/Settings.hpp"
+#include "../src/UtilityClasses/Leaderboard.hpp"
+#include "../src/UtilityClasses/PacmanWalls.hpp"
