@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+  db:
+    container_name: "db"
+    restart: always
+    image: "postgres:alpine"
+    networks:
+      - result-tier
+      - back-tier
+    volumes:
+      - db-data:/var/lib/postgresql/db-data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+  redis:
+    container_name: "redis"
+    restart: always
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - poll-tier
+      - back-tier
+  poll:
+    container_name: "poll"
+    restart: always
+    build: ./poll
+    depends_on:
+      - redis
+    ports:
+      - "5000:80"
+    networks:
+      - poll-tier
+    environment:
+      LANGUAGE: python
+  result:
+    container_name: "result"
+    restart: always
+    depends_on:
+      - db
+    build: ./result
+    ports:
+      - "5001:80"
+    networks:
+      - result-tier
+    environment:
+      LANGUAGE: javascript
+  worker:
+    container_name: "worker"
+    restart: always
+    build: ./worker
+    networks:
+      - back-tier
+    depends_on:
+      - db
+      - redis
+    environment:
+      LANGUAGE: java
+
+volumes:
+  db-data: {}
+
+networks:
+  poll-tier: {}
+  result-tier: {}
+  back-tier: {}
