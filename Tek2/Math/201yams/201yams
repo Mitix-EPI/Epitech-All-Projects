@@ -1,0 +1,201 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+def binom(k, n, p):
+    """binom(k,n,p): probabilité d'avoir k réussite(s) dans n évènements indépendants, chaque évènement ayant une probabilité p% de réussite"""
+
+    if k == n:
+        return p ** n
+    if p == 0:
+        return 0.0
+    if p == 1.0:
+        return 0.0
+    q = 1 - p
+    if k == 0:
+        return q ** n
+    j1 = k
+    j2 = n - k
+    xmin = 1.0e-200
+    x = 1.0
+    for i in range(0, k):
+        x *= n / k
+        while (x > xmin) and (j1 > 0):
+            x *= p
+            j1 -= 1
+        while (x > xmin) and (j2 > 0):
+            x *= q
+            j2 -= 1
+        n -= 1
+        k -= 1
+    return x * (p ** j1) * (q ** j2)
+
+def print_help():
+    print("USAGE\n    ./201yams d1 d2 d3 d4 d5 c\n")
+    print("DESCRIPTION")
+    print("    d1     value of the first die (0 if not thrown)")
+    print("    d2     value of the second die (0 if not thrown)")
+    print("    d3     value of the third die (0 if not thrown)")
+    print("    d4     value of the fourth die (0 if not thrown)")
+    print("    d5     value of the fifth die (0 if not thrown)")
+    print("    c      expected combination")
+
+def check_combination(combination, values):
+    possible_combinations = ["yams", "straight", "full", "three", "pair", "four"]
+    length_combinations = [1, 1, 2, 1, 1, 1]
+    index = 0
+
+    try:
+        index = possible_combinations.index(combination)
+    except:
+        print("Unkown combination. Type ./201yams -h", file=sys.stderr)
+        exit(84)
+
+    if len(values) != length_combinations[index]:
+        print("Unknown combination. Type ./201yams -h", file=sys.stderr)
+        exit(84)
+
+    for value in values:
+        if value < 1 or value > 6:
+            print("Incorrect value(s). Type ./201yams -h", file=sys.stderr)
+            exit(84)
+
+    if len(values) == 2 and values[0] == values[1]:
+        print("Full house values can't be the same. Type ./201yams -h", file=sys.stderr)
+        exit(84)
+
+    if combination == "straight" and (values[0] != 5 and values[0] != 6):
+        print("Straight values can only be 5 or 6. Type ./201yams -h", file=sys.stderr)
+        exit(84)
+
+def get_number_dies(dies, number):
+    nb = 0
+
+    for i in dies:
+        if i == number:
+            nb += 1
+    return nb
+
+def calculate_yams(dies, number):
+    nb = get_number_dies(dies, number)
+    percent = 0.0
+
+    if (nb == 5):
+        return ("%.2f" % 100.00)
+    else:
+        percent = binom(5 - nb, 5 - nb, 1/6)
+    return round(percent * 100, 2)
+
+def calculate_four(dies, number):
+    nb = get_number_dies(dies, number)
+    percent = 0.0
+
+    if (nb >= 4):
+        return (100.0)
+    else:
+        for i in range(4 - nb, 5 - nb + 1):
+            percent += binom(i, 5 - nb, 1/6)
+        return round(percent * 100, 2)
+
+def calculate_three(dies, number):
+    nb = get_number_dies(dies, number)
+    percent = 0.0
+
+    if (nb >= 3):
+        return ("%.2f" % 100.00)
+    else:
+        for i in range(3 - nb, 5 - nb + 1):
+            percent += binom(i, 5 - nb, 1/6)
+        return round(percent * 100, 2)
+
+def calculate_pair(dies, number):
+    nb = get_number_dies(dies, number)
+    percent = 0.0
+
+    if (nb >= 2):
+        return ("%.2f" % 100.00)
+    else:
+        for i in range(2 - nb, 5 - nb + 1):
+            percent += binom(i, 5 - nb, 1/6)
+        return round(percent * 100, 2)
+
+def calculate_full(dies, numbers):
+    percent = 0.0
+    nb_1 = get_number_dies(dies, numbers[0])
+    nb_2 = get_number_dies(dies, numbers[1])
+
+    if (nb_1 > 3):
+        nb_1 = 3
+    if (nb_2 > 2):
+        nb_2 = 2
+
+    if (nb_1 + nb_2 == 5):
+        return ("%.2f" % 100.00)
+    resultPair = math.factorial(5 - nb_1 - nb_2) / (math.factorial(3 - nb_2) * math.factorial((5 - nb_2 - nb_1) - (3 - nb_1)))
+    resultThree = math.factorial(2 - nb_2) / (math.factorial(2 - nb_2) * math.factorial((2 - nb_2) - (2 - nb_2)))
+    percent = (resultPair * resultThree) / 6 ** (5 - nb_1 - nb_2)
+    return round(percent * 100, 2)
+
+def finder(dies, num, i=0, ret=0):
+    for i in range(0, 5): ret = ret + 1 if dies[i] == num else ret
+    return (1 if ret > 1 else ret)
+
+def calculate_straight(dies, number):
+    nb = sum([finder(dies, i) for i in range(2, 7)]) if number == 6 else sum([finder(dies, i) for i in range(1, 6)])
+    return ("%.2f" % 100.00 if nb == 5 else round((math.factorial(5 - nb) / 6**(5 - nb)) * 100, 2))
+
+def calculate(dies, combination):
+    combination_type = combination.get("type")
+    result = 0
+
+    if combination_type == "yams":
+        result = calculate_yams(dies, combination.get("value")[0])
+        print("Chances to get a " + str(combination.get("value")[0]) + " yams: " + str(result) + "%")
+    elif combination_type == "four":
+        result = calculate_four(dies, combination.get("value")[0])
+        print("Chances to get a " + str(combination.get("value")[0]) + " four-of-a-kind: " + str(result) + "%")
+    elif combination_type == "three":
+        result = calculate_three(dies, combination.get("value")[0])
+        print("Chances to get a " + str(combination.get("value")[0]) + " three-of-a-kind: " + str(result) + "%")
+    elif combination_type == "pair":
+        result = calculate_pair(dies, combination.get("value")[0])
+        print("Chances to get a " + str(combination.get("value")[0]) + " pair: " + str(result) + "%")
+    elif combination_type == "full":
+        result = calculate_full(dies, combination.get("value"))
+        print("Chances to get a " + str(combination.get("value")[0]) + " full of " + str(combination.get("value")[1]) + ": " + str(result) + "%")
+    elif combination_type == "straight":
+        result = calculate_straight(dies, combination.get("value")[0])
+        print("Chances to get a " + str(combination.get("value")[0]) + " straight: " + str(result) + "%")
+    exit(0)
+
+if len(sys.argv) == 2 and sys.argv[1] == "-h":
+    print_help()
+    exit(0)
+elif len(sys.argv) == 7:
+    try:
+        d1 = int(sys.argv[1])
+        d2 = int(sys.argv[2])
+        d3 = int(sys.argv[3])
+        d4 = int(sys.argv[4])
+        d5 = int(sys.argv[5])
+        combination = {"type": sys.argv[6].split("_")[0]}
+        values = []
+        ind = 0
+        for i in sys.argv[6].split("_"):
+            ind += 1
+            if ind == 1:
+                continue
+            values.append(int(i))
+        combination["value"] = values
+        for i in range(1, 6):
+            if int(sys.argv[i]) < 0 or int(sys.argv[i]) > 6:
+                raise Exception("Invalid die")
+    except:
+        print("Invalid arguments. Type ./201yams -h for help.", file=sys.stderr)
+        exit(84)
+    check_combination(combination.get("type"), combination.get("value"))
+    calculate([d1, d2, d3, d4, d5], combination)
+else:
+    print("Not enough arguments. Type ./201yams -h for help.", file=sys.stderr)
+    exit(84)

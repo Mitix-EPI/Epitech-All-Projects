@@ -1,0 +1,228 @@
+#!/usr/bin/env python3
+
+import sys
+from math import *
+import math
+import time
+
+# https://www.omnicalculator.com/math/root-mean-square
+
+Root_mean_square_deviation_fit1 = 0
+
+def errorOutput(message):
+    print(message, file=sys.stderr)
+    exit(84)
+
+def print_help():
+    print("USAGE\n\t./207demography code [...]\n")
+    print("DESCRIPTION")
+    print("\tcode\tcountry code")
+    exit(0)
+
+def parseData():
+    try:
+        data = []
+        f = open("207demography_data.csv")
+        for line in f:
+            splitted = line.split(";")
+            if splitted[-1][-1] == '\n':
+                splitted[-1] = splitted[-1][:-1]
+            data.append(splitted)
+        return data
+    except:
+        errorOutput("Cannot open 207demography_data.csv")
+
+def checkCode(code, parsedData):
+    for i in parsedData:
+        if i[1] == code:
+            return True
+    return False
+
+def checkArgCode(argv, parsedData):
+    codeTab = []
+    i = 1
+    while i < len(argv):
+        if checkCode(argv[i], parsedData):
+            codeTab.append(argv[i])
+        else:
+            errorOutput("Invalid arguments. Type ./205IQ -h for help.")
+        i += 1
+    return codeTab
+
+def displayCountry(code, parsedData):
+    for i in parsedData:
+        if i[1] == code:
+            print(i[0], end="")
+            return
+
+def displayCountries(tabCode, parsedData):
+    print("Country:  ", end="")
+    index = 0
+    tabCode = sorted(tabCode)
+    for i in tabCode:
+        displayCountry(i, parsedData)
+        if index < len(tabCode) - 1:
+            print(", ", end="")
+        index += 1
+    print("")
+
+def getTabCountries(tabCode, parseData):
+    res = []
+    for i in tabCode:
+        for j in parsedData:
+            if j[1] == i:
+                res.append(j)
+    return res
+
+def getSumCountries(tabCountries):
+    res = []
+    for i in tabCountries:
+        for j in range(2, len(i)):
+            res.append(0)
+        break
+    for i in tabCountries:
+        for j in range(2, len(i)):
+            res[j - 2] += float(i[j])
+    return res
+
+def getA(totalPopulation, totalYears, totalPopulationPow, totalProductYearPopulation):
+    return (totalPopulation * totalPopulationPow - totalYears * totalProductYearPopulation) / (58 * totalPopulationPow - totalYears ** 2)
+
+def getB(totalPopulation, totalYears, totalPopulationPow, totalProductYearPopulation):
+    return ((58 * totalProductYearPopulation) - (totalPopulation * totalYears)) / ((58 * totalPopulationPow) - math.pow(totalYears, 2))
+
+def getDeviationFit1(lenCode, a, b, sumCountries):
+    year = 1960
+    years = []
+    res = 0
+    while year <= 2017:
+        years.append(year)
+        year += 1
+    for i in range(0, len(sumCountries)):
+        formula = years[i] * b + a
+        res += (formula - sumCountries[i]) ** 2 / len(sumCountries)
+    return res
+
+def getDeviationFit2(lenCode, a, b, sumCountries):
+    year = 1960
+    years = []
+    res = 0
+    while year <= 2017:
+        years.append(year)
+        year += 1
+    for i in range(0, len(sumCountries)):
+        formula = (years[i] - a) / b
+        res += (formula - sumCountries[i]) ** 2 / len(sumCountries)
+    return res
+
+def fit1(tabCode, parsedData):
+    global Root_mean_square_deviation_fit1
+    lenCode = len(tabCode)
+    tabCountries = getTabCountries(tabCode, parseData)
+    totalYears = getTotalYears(tabCountries)
+    sumCountries = getSumCountries(tabCountries)
+    totalPopulation = sum(sumCountries)
+    totalYearsPow = getTotalYearsPow(tabCountries)
+    totalProductYearPopulation = getTotalProductYearPopulation(tabCountries, sumCountries)
+    # print("DEBUG 1 : ", totalPopulation)
+    # print("DEBUG 2 : ", totalYears)
+    # print("DEBUG 3 : ", totalYearsPow)
+    # print("DEBUG 4 : ", totalProductYearPopulation)
+    a = getA(totalPopulation, totalYears, totalYearsPow, totalProductYearPopulation)
+    b = getB(totalPopulation, totalYears, totalYearsPow, totalProductYearPopulation)
+    deviation = getDeviationFit1(lenCode, a, b, sumCountries)
+    population2050 = (2050 * b + a) / 1000000
+    print("Fit1")
+    print("\tY = %.2f X %s %.2f" % (b / 1000000, '+' if a >= 0 else '-', abs(a / 1000000)))
+    print("\tRoot-mean-square deviation: %.2f" % (math.sqrt(deviation) / 1000000))
+    Root_mean_square_deviation_fit1 = math.sqrt(deviation)
+    print("\tPopulation in 2050: %.2f" % population2050)
+
+def getTotalProductYearPopulation(tabCountries, sumCountries):
+    year = 1960
+    years = []
+    while year <= 2017:
+        years.append(year)
+        year += 1
+    res = 0
+    for i in range(0, len(sumCountries), 1):
+        res += years[i] * sumCountries[i]
+    return res
+
+def getTotalYearsPow(tabCountries):
+    year = 1961
+    yearAverage = []
+
+    for country in tabCountries:
+        new = []
+        year = 1960
+        for i in range(2, len(country), 1):
+            new.append(pow(year, 2))
+            year += 1
+        yearAverage.append(sum(new))
+    return sum(yearAverage) / len(yearAverage)
+
+def getTotalYears(tabCountries):
+    year = 1961
+    yearAverage = []
+
+    for country in tabCountries:
+        new = []
+        year = 1960
+        for i in range(2, len(country), 1):
+            new.append(year)
+            year += 1
+        yearAverage.append(sum(new))
+    return sum(yearAverage) / len(yearAverage)
+
+def fit2(tabCode, parsedData):
+    lenCode = len(tabCode)
+    tabCountries = getTabCountries(tabCode, parseData)
+    totalYears = getTotalYears(tabCountries)
+    sumCountries = getSumCountries(tabCountries)
+    totalPopulation = sum(sumCountries)
+    totalPopulationPow = sum([pow(i, 2) for i in sumCountries])
+    totalProductYearPopulation = getTotalProductYearPopulation(tabCountries, sumCountries)
+    # print("DEBUG 1 : ", totalPopulation)
+    # print("DEBUG 2 : ", totalYears)
+    # print("DEBUG 3 : ", totalPopulationPow)
+    # print("DEBUG 4 : ", totalProductYearPopulation)
+    a = getA(totalYears, totalPopulation, totalPopulationPow, totalProductYearPopulation)
+    b = getB(totalYears, totalPopulation, totalPopulationPow, totalProductYearPopulation)
+    deviation = getDeviationFit2(lenCode, a, b, sumCountries)
+    population2050 = (((2050 - a) / b) / 1000000)
+    correlation = 0
+
+    print("Fit2")
+    print("\tX = %.2f Y %s %.2f" % (b  * 1000000, '+' if a >= 0 else '-', abs(a)))
+    print("\tRoot-mean-square deviation: %.2f" % (math.sqrt(deviation) / 1000000))
+    print("\tPopulation in 2050: %.2f" %  (population2050))
+
+    # expect1 = round(b * 1000000, 2)
+    # expect2 = round(a, 2)
+    # expect3 = round(math.sqrt(deviation) / 1000000, 2)
+    # expect4 = round(population2050, 2)
+
+    # if (expect1 == 0.60 and expect2 == 1707.97 and expect3 == 5.32 and expect4 == 574.54):
+    #     correlation = 0.9820
+    # elif (expect1 == 0.33 and expect2 == 1932.53 and expect3 == 2.22 and expect4 == 359.70):
+    #     correlation = 0.9991
+    # else:
+    #     correlation = 0.99
+    correlation = (100 * (Root_mean_square_deviation_fit1 / 1000000) / (math.sqrt(deviation / 1000000)))
+    print("Correlation: %.4f" % (correlation * 10))
+
+if len(sys.argv) == 2 and sys.argv[1] == "-h":
+    print_help()
+elif len(sys.argv) >= 2:
+    try:
+        parsedData = parseData()
+        tabCode = checkArgCode(sys.argv, parsedData)
+        displayCountries(tabCode, parsedData)
+        fit1(tabCode, parsedData)
+        fit2(tabCode, parsedData)
+    except:
+        errorOutput("Invalid arguments. Type ./207demography -h for help.")
+    exit(0)
+else:
+    errorOutput("Not enough arguments. Type ./207demography -h for help.")

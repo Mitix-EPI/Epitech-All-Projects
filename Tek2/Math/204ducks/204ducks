@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+def display_help():
+    print("USAGE")
+    print("\t./204ducks a\n")
+    print("DESCRIPTION")
+    print("\ta\tconstant")
+
+def get_probabilty_result(constant, time, reverse = False):
+    if not reverse:
+        result = constant * math.exp(-time) + (4 - 3 * constant) * math.exp(-2 * time) + (2 * constant - 4) * math.exp(-4 * time)
+        return result
+    result = -constant * math.exp(-time) - (4 - 3 * constant) / 2 * math.exp(-2 * time) - (2 * constant - 4) / 4 * math.exp(-4 * time)
+    return result
+
+def calculate_average(constant):
+    time = 0.0
+    result = 0.0
+    proba = 0.0
+
+    while proba < 99.999:
+        proba += get_probabilty_result(constant, time) / 10
+        result += get_probabilty_result(constant, time) / 10 * time
+        time += 0.001
+    result /= 99.999
+    result += 1/60
+    return result
+
+def calculate_time_back(constant, time):
+    duck_average_time = round((get_probabilty_result(constant, time, True) - get_probabilty_result(constant, 0, True)) * 100, 1)
+
+    return duck_average_time
+
+def calculate_deviation(constant, average):
+    result = 0.0
+    time = 0.0
+    while time < 100:
+        result += math.pow(time - average, 2) * get_probabilty_result(constant, time, False) / 1000
+        time += 0.001
+    result = math.sqrt(result)
+    return result
+
+def calculate_duck_time_percentage(constant, percentage):
+    result = 0.0
+    time = 0.0
+    while result < percentage:
+        time += 0.01
+        result += get_probabilty_result(constant, time)
+    return time
+
+
+def calculate(constant):
+    average = calculate_average(constant)
+    duck_time_fifty = calculate_duck_time_percentage(constant, 50)
+    duck_time_ninety = calculate_duck_time_percentage(constant, 99)
+
+    duck_time_fifty_sec = int(math.floor((duck_time_fifty - int(duck_time_fifty)) * 60))
+    if duck_time_fifty_sec > 0 and duck_time_fifty_sec < 10:
+        duck_time_fifty_sec = "0" + str(duck_time_fifty_sec)
+    else:
+        duck_time_fifty_sec = str(duck_time_fifty_sec)
+
+    duck_time_ninety_sec = int(math.floor((duck_time_ninety - int(duck_time_ninety)) * 60))
+    if duck_time_ninety_sec > 0 and duck_time_ninety_sec < 10:
+        duck_time_ninety_sec = "0" + str(duck_time_ninety_sec)
+    else:
+        duck_time_ninety_sec = str(duck_time_ninety_sec)
+
+    print("Average return time: " + str(int(average)) + "m %ds" % int((average - int(average)) * 60))
+    print("Standard deviation: " + str(round(calculate_deviation(constant, average), 3)))
+    print("Time after which 50% of the ducks are back: " + str(int(duck_time_fifty)) + "m " + duck_time_fifty_sec + "s")
+    print("Time after which 99% of the ducks are back: " + str(int(duck_time_ninety)) + "m " + duck_time_ninety_sec + "s")
+    print("Percentage of ducks back after 1 minute: " + str(float(calculate_time_back(constant, 1))) + "%")
+    print("Percentage of ducks back after 2 minutes: " + str(float(calculate_time_back(constant, 2))) + "%")
+
+if len(sys.argv) == 2:
+    if sys.argv[1] == "-h":
+        display_help()
+        exit(0)
+    else:
+        try:
+            a = float(sys.argv[1])
+        except:
+            sys.stderr.write("'a' must be a number.\n")
+            exit(84)
+        if a < 0 or a > 2.5:
+            sys.stderr.write("'a' value must be between 0 and 2.5\n")
+            exit(84)
+        calculate(a)
+        exit(0)
+else:
+    sys.stderr.write("Error number arg. Please use -h flag.\n")
+    exit(84)

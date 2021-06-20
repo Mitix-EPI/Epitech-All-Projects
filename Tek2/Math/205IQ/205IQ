@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+def errorOutput(message):
+    print(message, file=sys.stderr)
+    exit(84)
+
+def print_help():
+    print("USAGE\n\t./205IQ \u03BC \u03C3 [IQ1] [IQ2]\n")
+    print("DESCRIPTION")
+    print("\t\u03BC\tpredetermined mean")
+    print("\t\u03C3\tpredetermined standard deviation")
+    print("\tIQ1\tminimum IQ")
+    print("\tIQ2\tmaximum IQ")
+    exit(0)
+
+def formuleAlexis(micro, alpha, increment):
+    return (1 / (float(alpha) * math.sqrt(2 * math.pi))) * math.exp(-0.5 * ((float(micro) - float(increment)) / float(alpha)) ** 2)
+
+def calcAllPercentage(micro, alpha):
+    compute = 0
+    for i in range(201):
+        compute = formuleAlexis(micro, alpha, i)
+        print(i, format(round(compute, 5), ".5f"))
+
+def calcPercentageInferior(micro, alpha, IQ):
+    res = 0.0
+    i = 0.0
+    while i < IQ:
+        res += formuleAlexis(micro, alpha, i)
+        i += 0.01
+    print("%0.1f%s of people have an IQ inferior to %d" % (res, "%", float(IQ)))
+
+def calcPercentageBetween(micro, alpha, IQ1, IQ2):
+    res = 0.0
+    i = float(IQ1)
+    while i < IQ2:
+        res += formuleAlexis(micro, alpha, i)
+        i += 0.01
+    print("%.01f%s of people have an IQ between %d and %d" % (res, "%", IQ1, IQ2))
+
+if len(sys.argv) == 2 and sys.argv[1] == "-h":
+    print_help()
+elif len(sys.argv) == 3:
+    try:
+        micro = int(sys.argv[1])
+        alpha = int(sys.argv[2])
+        if micro < 0 or micro > 200 or alpha <= 0 or alpha > 200:
+            errorOutput("Invalid arguments. Type ./205IQ -h for help.")
+        calcAllPercentage(micro, alpha)
+    except:
+        errorOutput("Invalid arguments. Type ./205IQ -h for help.")
+    exit(0)
+elif len(sys.argv) == 4:
+    try:
+        micro = int(sys.argv[1])
+        alpha = int(sys.argv[2])
+        IQ1 = int(sys.argv[3])
+        if (micro < 0 or micro > 200 or alpha <= 0 or alpha > 200 or IQ1 < 0 or IQ1 > 200):
+            errorOutput("Invalid arguments. Type ./205IQ -h for help.")
+        calcPercentageInferior(micro, alpha, IQ1)
+    except:
+        errorOutput("Invalid arguments. Type ./205IQ -h for help.")
+    exit(0)
+elif len(sys.argv) == 5:
+    try:
+        micro = int(sys.argv[1])
+        alpha = int(sys.argv[2])
+        IQ1 = int(sys.argv[3])
+        IQ2 = int(sys.argv[4])
+        if (micro < 0 or micro > 200 or alpha <= 0 or alpha > 200 or IQ1 < 0 or IQ2 <= 0 or IQ2 < IQ1 or IQ1 > 200 or IQ2 > 200):
+            errorOutput("Invalid arguments. Type ./205IQ -h for help.")
+        calcPercentageBetween(micro, alpha, IQ1, IQ2)
+    except:
+        errorOutput("Invalid arguments. Type ./205IQ -h for help.")
+    exit(0)
+else:
+    errorOutput("Not enough arguments. Type ./205IQ -h for help.")

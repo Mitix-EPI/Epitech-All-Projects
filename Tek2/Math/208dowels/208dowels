@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+arguments = []
+
+probas = [99, 90, 80, 70, 60, 50, 40, 30, 20, 10, 5, 2, 1]
+distribution = {
+    1: [0.00, 0.02, 0.06, 0.15, 0.27, 0.45, 0.71, 1.07, 1.64, 2.71, 3.84, 5.41, 6.63],
+    2: [0.02, 0.21, 0.45, 0.71, 1.02, 1.39, 1.83, 2.41, 3.22, 4.61, 5.99, 7.82, 9.21],
+    3: [0.11, 0.58, 1.01, 1.42, 1.87, 2.37, 2.95, 3.66, 4.64, 6.25, 7.81, 9.84, 11.34],
+    4: [0.30, 1.06, 1.65, 2.19, 2.75, 3.36, 4.04, 4.88, 5.99, 7.78, 9.49, 11.67, 13.28],
+    5: [0.55, 1.61, 2.34, 3.00, 3.66, 4.35, 5.13, 6.06, 7.29, 9.24, 11.07, 13.39, 15.09],
+    6: [0.87, 2.20, 3.07, 3.83, 4.57, 5.35, 6.21, 7.23, 8.56, 10.64, 12.59, 15.03, 16.81],
+    7: [1.24, 2.83, 3.82, 4.67, 5.49, 6.35, 7.28, 8.38, 9.80, 12.02, 14.07, 16.62, 18.48],
+    8: [1.65, 3.49, 4.59, 5.53, 6.42, 7.34, 8.35, 9.52, 11.03, 13.36, 15.51, 18.17, 20.09],
+    9: [2.09, 4.17, 5.38, 6.39, 7.36, 8.34, 9.41, 10.66, 12.24, 14.68, 16.92, 19.68, 21.67],
+    10: [2.56, 4.87, 6.18, 7.27, 8.30, 9.34, 10.47, 11.78, 13.44, 15.99, 18.31, 21.16, 23.21]
+                }
+
+def calculate_prob():
+    p = 0.0
+    for i in range(0, 9):
+        p += i * arguments[i]
+    p /= 10000
+    return p
+
+def calc_chi_squared(x0, tx):
+    chi_square = 0.0
+
+    for i in range(0, len(x0)):
+        chi_square += ((x0[i] - tx[i]) ** 2) / tx[i]
+    return chi_square
+
+def get_fit_validity(chi_square, freedom):
+    global distribution
+    global probas
+
+    liste = distribution.get(freedom)
+    results = []
+
+    for i in range(0, len(liste)):
+        if liste[i] < chi_square and i < 12:
+            if i == 0:
+                results.append(probas[i])
+            results.append(probas[i + 1])
+
+    if len(results) == 0:
+        return "Fit validity:\t\tP > 99%"
+    elif len(results) > 0 and chi_square > liste[len(results)]:
+        return "Fit validity:\t\tP < 1%"
+    else:
+        return "Fit validity:\t\t%d%% < P < %d%%" % (results[-1], results[-2])
+
+def combi(a, b):
+    return math.factorial(b) / (math.factorial(a) * math.factorial(b - a))
+
+def loi_binomial(n, k, p):
+    return combi(k, n) * math.pow(p, k) * math.pow(1 - p, n - k)
+
+if len(sys.argv) == 2:
+    if sys.argv[1] == "-h":
+        print("USAGE")
+        print("\t./208dowels O0 O1 O2 O3 O4 O5 O6 O7 O8\n")
+        print("DESCRIPTION")
+        print("\tOi\tsize of the observed class")
+        exit(0)
+    else:
+        sys.stderr.write("Wrong launch. Please type ./208dowels -h for help.\n")
+        exit(84)
+elif len(sys.argv) == 10:
+    for i in range (1, len(sys.argv)):
+        try:
+            arguments.append(int(sys.argv[i]))
+            if arguments[-1] <= 0:
+                sys.stderr.write("Argument must be a positive integer. Please type ./208dowels -h for help.\n")
+                exit(84)
+        except:
+            sys.stderr.write("Argument must be a positive integer. Please type ./208dowels -h for help.\n")
+            exit(84)
+    nbPieces = 0
+    for i in arguments:
+        nbPieces += i
+    if nbPieces != 100:
+        sys.stderr.write("The number of pieces must be equal to 100. Please type ./208dowels -h for help.\n")
+        exit(84)
+    else:
+        x = [[0]]
+        x0 = [0]
+        tx = [0]
+        p = calculate_prob()
+
+        for i, c in enumerate(arguments):
+            if (c >= 10 and x0[-1] >= 10) or (x0[-1] >= 10 and i != len(arguments) - 1 and x0[-1] + c >= arguments[i + 1] + c):
+                if x[-1][0] != i - 1:
+                    x[-1].append(i - 1)
+                x.append([])
+                x0.append(0)
+                tx.append(0)
+                x[-1].append(i)
+            tx[-1] += 100 * loi_binomial(100, i, p)
+            x0[-1] += c
+        x[-1] = [x[-1][0]]
+        tx[-1] += 100 - sum(tx)
+
+        chi_squared = calc_chi_squared(x0, tx)
+        freedom_degrees = len(tx) - 2 # Classes - 2
+
+        txPrint = ["%.1f" % i for i in tx]
+
+        print("\tx", "\t| ".join(map('-'.join, [map(str, _) for _ in x])) + "+", "Total", sep="\t| ")
+        print("\tOx", "\t| ".join(map(str, x0)), "%d" % sum(x0), sep="\t| ")
+        print("\tTx", "\t| ".join(txPrint), "%d" % sum(tx), sep="\t| ")
+
+        print("Distribution:\t\tB(100, %.4f)" % (p))
+        print("Chi-squared:\t\t%.3f" % (chi_squared))
+        print("Degrees of freedom:\t%d" % (freedom_degrees))
+        print(get_fit_validity(chi_squared, freedom_degrees))
+
+else:
+    sys.stderr.write("Wrong launch. Please type ./208dowels -h for help.\n")
+    exit(84)

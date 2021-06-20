@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+population_size = 0
+sample_size = 0
+percentage = 0.0
+
+def display_help():
+    print("USAGE")
+    print("\t./209poll pSize sSize p\n")
+    print("DESCRIPTION")
+    print("\tpSize\tsize of the population")
+    print("\tsSize\tsize of the sample (supposed to be representative)")
+    print("\tp\tpercentage of voting intentions for a specific candidate")
+    exit(0)
+
+def display_results(population, sample, votes):
+    variance = (((votes / 100) * (1 - (votes / 100))) / sample) * ((population - sample) / (population - 1))
+    confidence_first = (2 * 1.96 * math.sqrt(variance)) / 2 * 100
+    confidence_second = (2 * 2.58 * math.sqrt(variance)) / 2 * 100
+    print("Population size:\t\t%d" % (population))
+    print("Sample size:\t\t\t%d" % (sample))
+    print("Voting intentions:\t\t%.2f" % (votes))
+    print("Variance:\t\t\t%.6f" % (variance))
+    result_first = votes - confidence_first if votes - confidence_first >= 0 else 0.0
+    result_second = votes + confidence_first if votes + confidence_first <= 100 else 100.0
+    print("95%% confidence interval:\t[%.2f%%; %.2f%%]" % (result_first, result_second))
+    result_first = votes - confidence_second if votes - confidence_second >= 0 else 0.0
+    result_second = votes + confidence_second if votes + confidence_second <= 100 else 100.0
+    print("99%% confidence interval:\t[%.2f%%; %.2f%%]" % (result_first, result_second))
+
+if len(sys.argv) == 2:
+    if sys.argv[1] == "-h":
+        display_help()
+elif len(sys.argv) == 4:
+    try:
+        population_size = int(sys.argv[1])
+        sample_size = int(sys.argv[2])
+        percentage = float(sys.argv[3])
+    except:
+        sys.stderr.write("Wrong launch. Please type ./209poll -h for help\n")
+        exit(84)
+    if (population_size <= 0 or sample_size <= 0):
+        sys.stderr.write("Population size and sample size must be superior than 0. Please type ./209poll -h for help\n")
+        exit(84)
+    if sample_size >= population_size:
+        sys.stderr.write("Population size must be greater than sample size. Please type ./209poll -h for help\n")
+        exit(84)
+    # if population_size - 1 < 0:
+        # exit(84)
+    if percentage < 0 or percentage > 100:
+        sys.stderr.write("Percentage must be between 0 and 100. Please type ./209poll -h for help\n")
+        exit(84)
+    display_results(population_size, sample_size, percentage)
+    exit(0)
+else:
+    sys.stderr.write("Wrong launch. Please type ./209poll -h for help\n")
+    exit(84)

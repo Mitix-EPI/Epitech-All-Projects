@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+
+import sys
+from math import factorial as fac
+from math import pow as pow
+import math
+import time
+
+nbPeapleHotline = 3500
+nbPhoneHotline = 25
+nbWorkingHour = 8
+
+def errorOutput(message):
+    print(message, file=sys.stderr)
+    exit(84)
+
+def print_help():
+    print("USAGE\n\t./203hotline [n k | d]\n")
+    print("DESCRIPTION")
+    print("\tn\tn value for the computation of C(n, k)")
+    print("\tk\tk value for the computation of C(n, k)")
+    print("\td\taverage duration of calls (in seconds)")
+    exit(0)
+
+def calcBinomialCoefficient(n, k):
+    return fac(n) // (fac(k) * fac(n - k))
+
+def calcPoisson(x, k):
+    """poisson, parameter k is the fit parameter"""
+    return (math.exp(x * -1) * pow(x, k)) / fac(k)
+
+def printBinomialCoefficient(n, k):
+    print(str(k) + "-combinations of a set of size " + str(n) + ":")
+    print("%d" % calcBinomialCoefficient(n, k))
+
+def printBinomialDistribution(n):
+    start = time.time()
+    diff = n / (3600 * nbWorkingHour)
+    overload = 0
+    print("Binomial distribution:")
+    for i in range(51):
+        calc = calcBinomialCoefficient(nbPeapleHotline, i) * (pow(diff, i) * (pow((1 - diff), (nbPeapleHotline - i))))
+        if i > nbPhoneHotline:
+            overload += calc
+        print(str(i) + " -> %.3f" % calc, end="")
+        if ((i + 1) % 5 == 0):
+            print("")
+        elif (i != 50):
+            print("\t", end="")
+    print("")
+    print("Overload: %.1f" % (overload * 100) + "%")
+    end = time.time()
+    print("Comutation time: %.2f" % ((end - start) * 1000) + "ms")
+
+def printPoissonDistribution(n):
+    start = time.time()
+    diff = (n / (3600 * nbWorkingHour)) * nbPeapleHotline
+    overload = 0
+    print("Poisson distribution:")
+    for i in range(51):
+        calc = calcPoisson(diff, i)
+        print(str(i) + " -> %.3f" % calc, end="")
+        if i > nbPhoneHotline:
+            overload += calc
+        if ((i + 1) % 5 == 0):
+            print("")
+        elif i != 50:
+            print("\t", end="")
+    print("\nOverload: %.1f" % (overload * 100) + "%")
+    end = time.time()
+    print("Computation time: %.2f" % ((end - start) * 1000) + "ms")
+
+if len(sys.argv) == 2 and sys.argv[1] == "-h":
+    print_help()
+elif len(sys.argv) == 2:
+    try:
+        d1 = int(sys.argv[1])
+        if d1 <= 0:
+            errorOutput("Invalid arguments. Type ./203hotline -h for help.")
+        printBinomialDistribution(d1)
+        print("")
+        printPoissonDistribution(d1)
+    except:
+        errorOutput("Invalid arguments. Type ./203hotline -h for help.")
+elif len(sys.argv) == 3:
+    try:
+        d1, d2 = int(sys.argv[1]), int(sys.argv[2])
+        if (d1 <= 0 or d2 < 0):
+            errorOutput("Invalid arguments. Type ./203hotline -h for help.")
+        printBinomialCoefficient(d1, d2)
+    except:
+        errorOutput("Invalid arguments. Type ./203hotline -h for help.")
+    exit(0)
+else:
+    errorOutput("Not enough arguments. Type ./203hotline -h for help.")

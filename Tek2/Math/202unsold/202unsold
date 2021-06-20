@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+X_list = []
+Y_list = []
+
+def errorOutput(message):
+    print(message, file=sys.stderr)
+    exit(84)
+
+def print_help():
+    print("USAGE\n    ./202unsold a b\n")
+    print("DESCRIPTION")
+    print("    a       constant computed from past results")
+    print("    b       constant computed from past results")
+    exit(0)
+
+def formula(x, y, a, b):
+    return ((a - x) * (b - y)) / ((5 * a - 150)*(5 * b - 150))
+
+def getSumTable1(i, tab):
+    return sum([tab[i][x] for x in range(5)])
+
+def getSumTable2(i, tab):
+    return sum([tab[x][i] for x in range(5)])
+
+def print_table(a, b, tab):
+    print("\tX=10\tX=20\tX=30\tX=40\tX=50\tY law")
+    for i in range(5):
+        print("Y=" + str((i + 1) * 10), end = "")
+        for x in range(5):
+            print("\t" + "%.3f" % tab[i][x], end = "")
+        tmp = getSumTable1(i, tab)
+        Y_list.append(tmp)
+        print("\t" + "%.3f" % tmp)
+    print("X law", end = "")
+    for y in range(5):
+        tmp = getSumTable2(y, tab)
+        X_list.append(tmp)
+        print("\t" + "%.3f" % tmp, end = "")
+    print("\t1.000")
+
+def print_law(a, b):
+    print("z\t20\t30\t40\t50\t60\t70\t80\t90\t100")
+    print("p(Z=z)", end = "")
+    for i in range(9):
+        tmp, res = 0.0, 0.0
+        for y in range(5):
+            for x in range(5):
+                tmp = formula((x + 1) * 10, (y + 1) * 10, a, b)
+                if x + y == i and y < 5:
+                    res += tmp
+        print("\t%0.3f" %(res), end = "")
+    print("")
+
+def print_variances(a, b):
+    variances_x, variances_y, expected_x, expected_y = 0.0, 0.0, 0.0, 0.0
+    for i in range(5):
+        expected_x += X_list[i] * ((i + 1) * 10)
+        expected_y += Y_list[i] * ((i + 1) * 10)
+    for j in range(5):
+        variances_x += (math.pow((((j + 1) * 10) - expected_x), 2)) * X_list[j]
+        variances_y += (math.pow((((j + 1) * 10) - expected_y), 2)) * Y_list[j]
+    print("expected value of X:\t" + "%0.1f" % expected_x)
+    print("variance of X:\t\t" + "%0.1f" % variances_x)
+    print("expected value of Y:\t" + "%0.1f" % expected_y)
+    print("variance of Y:\t\t" + "%0.1f" % variances_y)
+    print("expected value of Z:\t" + "%0.1f" % (expected_x + expected_y))
+    print("variance of Z:\t\t" + "%0.1f" % (variances_x + variances_y))
+
+def result(a, b, tab):
+    print("--------------------------------------------------------------------------------")
+    print_table(a, b, tab)
+    print("--------------------------------------------------------------------------------")
+    print_law(a, b)
+    print("--------------------------------------------------------------------------------")
+    print_variances(a, b)
+    print("--------------------------------------------------------------------------------")
+
+if len(sys.argv) == 2 and sys.argv[1] == "-h":
+    print_help()
+elif len(sys.argv) == 3:
+    try:
+        d1, d2 = int(sys.argv[1]), int(sys.argv[2])
+        if (d1 <= 50 or d2 <= 50):
+            errorOutput("Invalid arguments. Type ./202unsold -h for help.")
+        tab = [[float(formula((x + 1) * 10, (y + 1) * 10, d1, d2)) for x in range(5)] for y in range(5)]
+        result(d1, d2, tab)
+    except:
+        errorOutput("Invalid arguments. Type ./202unsold -h for help.")
+    exit(0)
+else:
+    errorOutput("Not enough arguments. Type ./202unsold -h for help.")
