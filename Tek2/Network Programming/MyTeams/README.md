@@ -1,4 +1,4 @@
-<p align="center"><img src="../../../images/Teams.png" style="max-width: 300px" alt="teams"></p>
+<p align="center"><img src="../../../images/Teams.png" style="max-width: 100px; max-height: 100px" alt="teams"></p>
 
 # My Teams
 
