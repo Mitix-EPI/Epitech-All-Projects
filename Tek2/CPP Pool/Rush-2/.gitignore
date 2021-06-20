@@ -1,0 +1,6 @@
+a.out
+*.gcda
+*.gcno
+unit_tests
+settings.json
+.vscode

@@ -1,0 +1,208 @@
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0, down : 0
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.73613, down : 4.93971
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.80256, down : 6.56544
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.81722, down : 3.68915
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.84458, down : 6.19027
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0.152412, down : 0.152412
+name : wlp4s0, up : 1.80354, down : 10.8173
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.91687, down : 8.62886
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0.476776, down : 0.476776
+name : wlp4s0, up : 1.88268, down : 15.632
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.84458, down : 13.9437
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.83774, down : 18.0081
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.80061, down : 19.0085
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 1.79475, down : 4.87718
+name : enp0s31f6, up : 0, down : 0
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0, down : 0
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0644531, down : 2.6875
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0654297, down : 2.5625
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0625, down : 2.625
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0732422, down : 3.6875
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0742188, down : 7.4375
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0927734, down : 11.5625
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0732422, down : 14.125
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0791016, down : 10.875
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0.456055, down : 0.456055
+name : wlp4s0, up : 0.0859375, down : 11.375
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0.456055, down : 0.456055
+name : wlp4s0, up : 0.09375, down : 14.3125
+name : enp0s31f6, up : 0, down : 0
+
+
+
+
+name : br-12c05883555a, up : 0, down : 0
+name : docker0, up : 0, down : 0
+name : lo, up : 0, down : 0
+name : wlp4s0, up : 0.0810547, down : 10.75
+name : enp0s31f6, up : 0, down : 0

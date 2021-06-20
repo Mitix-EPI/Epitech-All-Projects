@@ -1,0 +1,71 @@
+The ship USS Kreog has been finished.
+It is 289 m in length and 132 m in width.
+It can go to Warp 6!
+Ensign Pavel Chekov, awaiting orders.
+The independent ship Greok just finished its construction.
+It is 290 m in length and 20 m in width.
+We are the Borgs. Lower your shields and surrender yourselves unconditionally.
+Your biological characteristics and technologies will be assimilated.
+Resistance is futile.
+USS Kreog: The core is set.
+USS Kreog: The core is stable at the time.
+James T. Kirk: I'm glad to be the captain of the USS Kreog.
+Everything is in order
+Greok: The core is set.
+Greok: The core is stable at the time.
+Kreog.move(JUPITER) : 1
+
+UssKreog.move(JUPITER) : 1
+
+Cube.move(JUPITER) : 1
+
+Kreog.move(JUPITER) : 0
+
+UssKreog.move(JUPITER) : 0
+
+Cube.move(JUPITER) : 0
+
+Kreog.move(3, BABEL) : 1
+
+UssKreog.move(3, BABEL) : 1
+
+Cube.move(3, BABEL) : 1
+
+Kreog.move(14, BABEL) : 0
+
+UssKreog.move(14, BABEL) : 0
+
+Cube.move(14, BABEL) : 0
+
+Kreog.move() : 1
+
+UssKreog.move() : 1
+
+Cube.move() : 1
+
+Before : 10, 6
+
+Kreog: Firing on target. 9 torpedoes remaining.
+UssKreog.fire(&Cube) : 9, -44
+
+Kreog: No enough torpedoes to fire, James T. Kirk!
+UssKreog.fire(15, &Cube) : 9, -44
+
+Kreog: Firing on target. 5 torpedoes remaining.
+UssKreog.fire(4, &Cube) : 5, -244
+
+Before Cube.fire(&UssKreog) : 100
+
+Firing on target with 4GW frequency.
+After Cube.fire(&UssKreog) : 96
+
+Before Cube.fire(&Kreog) : 1
+
+Firing on target with 4GW frequency.
+After Cube.fire(&Kreog) : 0
+
+Before Cube.repair() : 3, -244
+
+Begin shield re-initialisation... Done. Awaiting further instructions.
+After Cube.repair() : 2, 100
+

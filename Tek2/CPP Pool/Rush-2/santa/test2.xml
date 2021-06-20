@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<gift class_id="0" tracking_level="0" version="1">
+    <item class_id="1" tracking_level="0" version="1">
+        <gifts.name>Teddy</gifts.name>
+    </item>
+    <item>
+        <gifts.name>Teddy</gifts.name>
+    </item>
+    <item>
+        <gifts.name>LittlePony</gifts.name>
+    </item>
+    <item>
+        <gifts.name>Caca</gifts.name>
+    </item>
+    <item>
+        <gifts.name>Teddy</gifts.name>
+    </item>
+</gift>

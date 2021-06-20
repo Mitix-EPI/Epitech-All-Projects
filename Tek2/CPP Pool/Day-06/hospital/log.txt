@@ -1,0 +1,56 @@
+Dr.Cox: I'm Dr.Cox! How do you kreog?
+Dr.House: I'm Dr.House! How do you kreog?
+Dr.Boudur-Oulot: I'm Dr.Boudur-Oulot! How do you kreog?
+[HOSPITAL] Doctor Cox just arrived!
+Dr.Cox: Time to get to work!
+[HOSPITAL] Doctor House just arrived!
+Dr.House: Time to get to work!
+[HOSPITAL] Doctor Boudur-Oulot just arrived!
+Dr.Boudur-Oulot: Time to get to work!
+[HOSPITAL] Patient Ganepar just arrived!
+[HOSPITAL] Patient Varia just arrived!
+[HOSPITAL] Patient RedFace just arrived!
+[HOSPITAL] Patient Scarface just arrived!
+[HOSPITAL] Patient Falter just arrived!
+[HOSPITAL] Nurse 1 just arrived!
+Nurse 1: Time to get to work!
+[HOSPITAL] Nurse 2 just arrived!
+Nurse 2: Time to get to work!
+[HOSPITAL] Work starting with:
+Doctors: Cox, House, Boudur-Oulot.
+Nurses: 1, 2.
+Patients: Ganepar, Varia, RedFace, Scarface, Falter.
+
+Dr.Cox: So what's goerking you Mr.Ganepar?
+Mr.Ganepar: Gooeeeeerrk!!
+Nurse 1: Kreog! Mr.Ganepar needs a Kinder!
+Mr.Ganepar: There is a toy inside!
+Dr.House: So what's goerking you Mr.Varia?
+Mr.Varia: Gooeeeeerrk!!
+Nurse 2: Kreog! Mr.Varia needs a Mars!
+Mr.Varia: Mars, and it kreogs!
+Dr.Boudur-Oulot: So what's goerking you Mr.RedFace?
+Mr.RedFace: Gooeeeeerrk!!
+Nurse 1: Kreog! Mr.RedFace needs a Kinder!
+Mr.RedFace: There is a toy inside!
+Dr.Cox: So what's goerking you Mr.Scarface?
+Mr.Scarface: Gooeeeeerrk!!
+Nurse 2: Kreog! Mr.Scarface needs a Kinder!
+Mr.Scarface: There is a toy inside!
+Dr.House: So what's goerking you Mr.Falter?
+Mr.Falter: Gooeeeeerrk!!
+Nurse 1: Kreog! Mr.Falter needs a Crunch!
+Mr.Falter: Goerkreog!
+Nurse 1: Time to go home to my eucalyptus forest!
+Nurse 2: Time to go home to my eucalyptus forest!
+Dr.Cox: Time to go home to my eucalyptus forest!
+Dr.House: Time to go home to my eucalyptus forest!
+Dr.Boudur-Oulot: Time to go home to my eucalyptus forest!
+Lists cleaned up.
+Mr.Falter: Kreooogg!! I'm cuuuured!
+Mr.Varia: Kreooogg!! I'm cuuuured!
+Mr.RedFace: Kreooogg!! I'm cuuuured!
+Mr.Scarface: Kreooogg!! I'm cuuuured!
+Mr.Ganepar: Kreooogg!! I'm cuuuured!
+Nurse 2: Finally some rest!
+Nurse 1: Finally some rest!

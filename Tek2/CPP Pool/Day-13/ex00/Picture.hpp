@@ -1,0 +1,29 @@
+/*
+** EPITECH PROJECT, 2021
+** B-CPP-300-MPL-3-1-CPPD13-alexandre.juan
+** File description:
+** Picture
+*/
+
+#ifndef PICTURE_HPP_
+#define PICTURE_HPP_
+
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
+class Picture {
+    public:
+        Picture();
+        Picture(const std::string &file);
+        ~Picture();
+
+        bool getPictureFromFile(const std::string &file);
+
+        std::string data;
+    protected:
+    private:
+};
+
+#endif /* !PICTURE_HPP_ */
