@@ -19,7 +19,7 @@
 *This unit was simple thanks to my experience in internship where I learnt Gitlab CI with dockers and some others features.*
 
 | Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) |
-|    :---:     |    :---:    |       :---:       | :---: | :---: |
+|    :---:     |    :---:    |       :---:       | :---: |
 |[Popeye]| Docker / SQL / JS / Java / Python | Introduction to Docker and Docker compose | ![Easy Difficulty] |
 |[My Marvin]| Jenkins / Docker | Introduction to Jenkins with plugins | ![Easy Difficulty] |
 
@@ -32,7 +32,7 @@
 *This unit was so much fun for me. I'm very interested to how network works and I learnt a lot with this both projects.*
 
 | Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) |
-|    :---:     |    :---:    |       :---:       | :---: | :---: |
+|    :---:     |    :---:    |       :---:       | :---: |
 |[My FTP]| C | Introduction to TCP sockets and creation of a FTP server | ![Medium Difficulty] |
 |[My Teams]| C | Creation of a server and CLI client with more than a dozen of functionnalities | ![Medium Difficulty] |
 
