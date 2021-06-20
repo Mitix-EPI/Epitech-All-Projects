@@ -1,0 +1,11 @@
+.vscode
+a.out
+myteams_cli
+myteams_server
+*.o
+*.db
+test_*
+jankun_norme.rb
+normez.rb
+norm.log
+doc
