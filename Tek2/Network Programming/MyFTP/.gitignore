@@ -1,0 +1,7 @@
+*.o
+myftp
+myclient
+a.out
+gnu_server.c
+.vscode
+split_test.c
