@@ -1,0 +1,21 @@
+{
+    "name": "crypto-trader-js-starterbot",
+    "version": "1.0.0",
+    "description": "Crypto Trader Riddles.io Javascript",
+    "main": "main.js",
+    "author": "Alexandre Juan & Jean-Louis Deurveilher",
+    "license": "MIT",
+    "private": false,
+    "scripts": {
+        "build": "bin/build",
+        "smoke-test": "bin/smoke_test",
+        "smoke-test-follow": "nodemon --exec bin/smoke_test"
+    },
+    "devDependencies": {
+        "eslint": "^4.18.1",
+        "eslint-config-prettier": "^2.9.0",
+        "eslint-plugin-prettier": "^2.6.0",
+        "nodemon": "^1.17.3",
+        "prettier": "^1.11.0"
+    }
+}

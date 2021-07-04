@@ -1,0 +1,12 @@
+settings player_names player0
+settings your_bot player0
+settings timebank 5000
+settings time_per_move 100
+settings candle_interval 1800
+settings candle_format pair,date,high,low,open,close,volume
+settings candles_total 1
+settings candles_given 1
+settings initial_stack 1000
+update game next_candles BTC_ETH,1516753800,0.090995,0.09040017,0.09060023,0.09069601,39.15071531;USDT_ETH,1516753800,976.99644142,955.99999998,974.87665079,960.00160798,316622.92602686;USDT_BTC,1516753800,10806.92999962,10501,10748.4213653,10575.00000019,1618333.6451304
+update game stacks BTC:0.00000000,ETH:0.00000000,USDT:1000.00
+action order 5000

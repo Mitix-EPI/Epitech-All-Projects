@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Author: Dino Hensen <dino@riddles.io>
+#
+# Runs smoke tests then prints OK/FAIL according to bot exit code.
+
+# Color suppor test
+# http://unix.stackexchange.com/questions/9957/how-to-check-if-bash-can-print-colors
+if [ -t 1 ]; then
+    ncolors=$(tput colors)
+    if test -n "$ncolors" && test $ncolors -ge 8; then
+        bold="$(tput bold)"
+        normal="$(tput sgr0)"
+        red="$(tput setaf 1)"
+        redbg="$(tput setab 1)"
+        green="$(tput setaf 2)"
+        greenbg="$(tput setab 2)"
+    fi
+fi
+
+smoke_test_input() {
+    TEST_INPUT_FILE="$1"
+    cat $TEST_INPUT_FILE | node main.js > /dev/null
+    if [[ $? -eq 0 ]]; then
+        echo "Smoke test ${green}${bold}OK${normal} for $TEST_INPUT_FILE"
+    else
+        echo "Smoke test ${red}${bold}FAIL${normal} for $TEST_INPUT_FILE"
+    fi
+}
+
+smoke_test_input ./test_input/single_action
+smoke_test_input ./test_input/full_match
+# smoke_test_input ./test_input/add_more_here
