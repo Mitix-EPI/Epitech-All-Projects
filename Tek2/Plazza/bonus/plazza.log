@@ -1,0 +1,28 @@
+Plazza initializing ...
+Margarita S x6
+
+Creating new kitchen with id 1
+Cooking Margarita size S kitchen(1) cook(1)
+Cooking Margarita size S kitchen(1) cook(2)
+Cooking Margarita size S kitchen(1) cook(1)
+Cooking Margarita size S kitchen(1) cook(2)
+Creating new kitchen with id 2
+Cooking Margarita size S kitchen(2) cook(1)
+Cooking Margarita size S kitchen(2) cook(2)
+Kitchen kill
+ with kitchen id 2
+Finished fantasia size XXL
+ with kitchen id 2
+Finished fantasia size XXL
+ with kitchen id 2
+Finished margarita size S with kitchen id 1
+Finished margarita size S with kitchen id 1
+Finished margarita size S
+ with kitchen id 1
+Finished margarita size S
+ with kitchen id 2
+Finished margarita size S
+ with kitchen id 2
+Finished margarita size S with kitchen id 1
+Kitchen kill with kitchen id 2
+Kitchen kill with kitchen id 1

@@ -1,0 +1,7 @@
+Bootstrap
+.vscode
+*.o
+plazza
+bootstrap
+log.txt
+.DS_Store
