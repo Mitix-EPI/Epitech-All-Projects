@@ -1,5 +1,13 @@
 # Second Year (Tek 2)
 
+#### Plazza
+
+| Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) | Has bonus |
+|    :---:     |    :---:    |       :---:       | :---: | :---: |
+|[Plazza]| C++ / SFML | Create and Manage a restaurant with **Thread Pool** | ![Medium Difficulty] | :star: |
+
+[Plazza]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek2/Plazza
+
 #### Object-Oriented Programming
 
 | Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) | Has bonus |
@@ -42,9 +50,9 @@
 
 #### Computer Numerical Analysis (Trade)
 
-| Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) |
-|    :---:     |    :---:    |       :---:       | :---: |
-|[Groundhog]| C++ | Compute calcs on the average temperature according to a period | ![Easy Difficulty] |
+| Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) | Has bonus |
+|    :---:     |    :---:    |       :---:       | :---: | :---: |
+|[Groundhog]| C++ | Compute calcs on the average temperature according to a period | ![Easy Difficulty] | :star: |
 |[Trade]| JavaScript | Make as much money as possible with cryptocurrencies | ![Easy Difficulty] |
 
 [Groundhog]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek2/Computer%20Numerical%20Analysis/Groundhog
