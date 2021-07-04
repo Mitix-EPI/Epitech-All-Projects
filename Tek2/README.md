@@ -40,9 +40,19 @@
 
 [My Teams]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek2/Network%20Programming/MyTeams
 
+#### Computer Numerical Analysis (Trade)
+
+| Projects Names | Language(s) | Quick Descriptions | Difficulties (According to my experience) |
+|    :---:     |    :---:    |       :---:       | :---: |
+|[Groundhog]| C++ | Compute calcs on the average temperature according to a period | ![Easy Difficulty] |
+|[Trade]| JavaScript | Make as much money as possible with cryptocurrencies | ![Easy Difficulty] |
+
+[Groundhog]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek2/Computer%20Numerical%20Analysis/Groundhog
+[Trade]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek2/Computer%20Numerical%20Analysis/Trade
+
 #### Mathematics
 
-*I realised all my mathematics projects in Tek2 with [Cyril Grosjean](https://github.com/CyrilGrosjean)*
+*I realised all my mathematics projects in Tek2 in Python with [Cyril Grosjean](https://github.com/CyrilGrosjean)*
 
 | Projects Names | Quick Descriptions | Has bonus |
 |    :---:     |    :---:    |      :---:       |
