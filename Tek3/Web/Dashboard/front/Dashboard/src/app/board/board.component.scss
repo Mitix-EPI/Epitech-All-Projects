@@ -1,0 +1,126 @@
+.card:active {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.ytb-card-header {
+  color: #dc3545 !important;
+}
+
+.ytb-modal .modal-dialog .modal-content {
+  border-color: #dc3545;
+  border: 3px solid #dc3545 !important;
+  border-radius: 0.7rem !important;
+}
+
+.gh-modal .modal-dialog .modal-content {
+  border-color: #2c3e50;
+  border: 3px solid #2c3e50 !important;
+  border-radius: 0.7rem !important;
+}
+
+.spotify-modal .modal-dialog .modal-content {
+  border-color: #1db954;
+  border: 3px solid #1db954 !important;
+  border-radius: 0.7rem !important;
+}
+
+.price-modal .modal-dialog .modal-content {
+  border-color: #ffc107;
+  border: 3px solid #ffc107 !important;
+  border-radius: 0.7rem !important;
+}
+
+.weather-modal .modal-dialog .modal-content {
+  border-color: #007bff;
+  border: 3px solid #007bff !important;
+  border-radius: 0.7rem !important;
+}
+
+.nasa-modal .modal-dialog .modal-content {
+  border-color: #0b3d91;
+  border: 3px solid #0b3d91 !important;
+  border-radius: 0.7rem !important;
+}
+
+.board {
+  width: 100%;
+  height: calc(100% - 16rem);
+  position:fixed;
+}
+
+.btn-circle.btn-sm {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  font-size: 8px;
+  text-align: center;
+}
+.btn-circle.btn-md {
+  width: 50px;
+  height: 50px;
+  padding: 7px 10px;
+  border-radius: 25px;
+  font-size: 10px;
+  text-align: center;
+}
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  border-radius: 35px;
+  font-size: 2rem;
+  text-align: center;
+}
+.btn-add {
+  position: absolute;
+  top: 80%;
+  left: calc(98% - 70px);
+}
+
+.dropup .dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-menu {
+  margin-bottom: 10px;
+  min-width: 18vw;
+}
+
+.dropdown-item {
+  font-size: calc(1.125rem + 0.3vw);
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+.title-dropdown {
+  font-weight: bold;
+}
+
+.youtube-item:hover, .yt:focus {
+  background-color: #dc3545; // Youtube
+}
+
+.spotify-item:hover, .spotify-item:focus {
+  background-color: #1DB954; // Spotify
+}
+
+.github-item:hover, .github-item:focus {
+  background-color: #2c3e50; // Github
+}
+
+.price-item:hover, .price-item:focus {
+  background-color: rgb(207, 207, 9); // Price
+}
+
+.weather-item:hover, .weather-item:focus {
+  background-color: rgb(45, 197, 235); // Weather
+}
+
+.nasa-item:hover, .nasa-item:focus {
+  background-color: #0b3d91; // Weather
+}

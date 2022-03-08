@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Service</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list id="firststep" inset="true">
+    <ion-list-header>
+      <ion-card-title>1- Choose Action</ion-card-title>
+    </ion-list-header>
+    <ion-accordion-group>
+      <ion-accordion *ngFor="let service of services">
+        <ion-item slot="header" *ngIf="service.actions && !service.authentication_required && service.actions.length > 0">
+          <img [src]="service.icon" item-start style="width: 32px; height: 32px; margin-right: 10px;">
+          <ion-label>{{service.display_name}}</ion-label>
+        </ion-item>
+        <ion-list slot="content">
+          <ng-container *ngFor="let item of service.actions" slot="item">
+            <ion-item (click)="selectActionTmp(item)">
+              <ion-label>{{item.display_name}}</ion-label>
+            </ion-item>
+          </ng-container>
+        </ion-list>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ion-list>
+
+  <ion-card id="secondstep" inset="true" *ngIf="selectedActionTmp">
+    <ion-card-header>
+      <ion-card-subtitle>{{selectedActionTmp!.display_name}}</ion-card-subtitle>
+      <ion-card-title>2- Setup Action</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      {{selectedActionTmp!.description}}
+      <ng-container
+        *ngTemplateOutlet="argumentsSetup; context:{arguments: selectedActionTmp!.arguments, values: actionArgumentsValues}">
+      </ng-container>
+      <ion-button class="next-button" (click)="selectedAction = selectedActionTmp; scrollTo('thirdstep')" expand="block" color="dark">Next</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list *ngIf="selectedAction" id="thirdstep" inset="true">
+    <ion-list-header>
+      <ion-card-title>3- Choose Reaction</ion-card-title>
+    </ion-list-header>
+    <ion-accordion-group>
+      <ion-accordion *ngFor="let service of services">
+        <ion-item slot="header" *ngIf="service.reactions && !service.authentication_required && service.reactions.length > 0">
+          <img [src]="service.icon" item-start style="width: 32px; height: 32px; margin-right: 10px;">
+          <ion-label>{{service.display_name}}</ion-label>
+        </ion-item>
+        <ion-list slot="content">
+          <ng-container *ngFor="let item of service.reactions" slot="item">
+            <ion-item (click)="selectReaction(item)">
+              <ion-label>{{item.display_name}}</ion-label>
+            </ion-item>
+          </ng-container>
+        </ion-list>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ion-list>
+
+  <ion-card id="fourthstep" inset="true" *ngIf="selectedReaction">
+    <ion-card-header>
+      <ion-card-subtitle>{{selectedReaction!.display_name}}</ion-card-subtitle>
+      <ion-card-title>4- Setup Reaction</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      {{selectedReaction!.description}}
+      <ng-container
+        *ngTemplateOutlet="argumentsSetup; context:{arguments: selectedReaction!.arguments, values: actionArgumentsValues}">
+      </ng-container>
+      <ion-button (click)="validateReaction()" expand="block" color="dark">Create the reaction</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<ng-template #argumentsSetup let-arguments="arguments" let-values="values">
+  <ion-item class="item-space" *ngFor="let argument of arguments">
+    <ion-label>{{argument.display_name}}</ion-label>
+    <ng-container *ngIf="argument.options.length === 0; else optionsDisplay">
+      <ng-container *ngIf="argument.type === 'string'" class="mt-2">
+        <ion-input type="text" placeholder="{{argument.default}}"
+          [(ngModel)]="values[argument.name]"></ion-input>
+      </ng-container>
+      <ng-container *ngIf="argument.type === 'number'" class="mt-2">
+        <ion-input type="number" class="w-full p-2 border-2" placeholder="{{argument.default}}"
+          [(ngModel)]="values[argument.name]"></ion-input>
+      </ng-container>
+    </ng-container>
+    <ng-template #optionsDisplay>
+      <ng-container class="mt-2">
+        <ion-select cancelText="Nah" okText="Okay!"
+          [(ngModel)]="values[argument.name]">
+          <ion-select-option *ngFor="let option of argument.options" [value]="option.name">{{option.name}}</ion-select-option>
+        </ion-select>
+      </ng-container>
+    </ng-template>
+  </ion-item>
+</ng-template>

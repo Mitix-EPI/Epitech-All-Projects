@@ -1,0 +1,83 @@
+<div *ngIf="loading" class="static absolute top-0 w-full overflow-hidden">
+  <div class="w-1/2 inline-block relative fluentProgressBar-waiting"></div>
+</div>
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
+      <div class="flex justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg"  class="w-20 h-20 text-dark-600" fill="none" viewBox="0 0 24 24">
+            <path fill="black" d="M10,10.9c2.373,0,4.303-1.932,4.303-4.306c0-2.372-1.93-4.302-4.303-4.302S5.696,4.223,5.696,6.594C5.696,8.969,7.627,10.9,10,10.9z M10,3.331c1.801,0,3.266,1.463,3.266,3.263c0,1.802-1.465,3.267-3.266,3.267c-1.8,0-3.265-1.465-3.265-3.267C6.735,4.794,8.2,3.331,10,3.331z"></path>
+            <path fill="black" d="M10,12.503c-4.418,0-7.878,2.058-7.878,4.685c0,0.288,0.231,0.52,0.52,0.52c0.287,0,0.519-0.231,0.519-0.52c0-1.976,3.132-3.646,6.84-3.646c3.707,0,6.838,1.671,6.838,3.646c0,0.288,0.234,0.52,0.521,0.52s0.52-0.231,0.52-0.52C17.879,14.561,14.418,12.503,10,12.503z"></path>
+          </svg>
+      </div>
+      <h3 class="text-2xl font-bold text-center">Login to your account</h3>
+      <form [formGroup]="form" (ngSubmit)="login()" #myform="ngForm">
+          <div class="mt-4">
+              <div>
+                  <label class="block required" for="email">Email</label>
+                          <input type="text" placeholder="Email"
+                              class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" formControlName="email" id="email">
+                          <span *ngIf="isFieldValid('email')" class="text-xs tracking-wide text-red-600">Email field is required </span>
+              </div>
+              <div class="mt-4">
+                  <label class="block required">Password</label>
+                          <input type="password" placeholder="Password"
+                              class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 required" formControlName="password" id="password">
+                          <span *ngIf="isFieldValid('password')" class="text-xs tracking-wide text-red-600">Password field is required </span>
+              </div>
+              <div>
+                <span *ngIf="isLoginFailed()" class="text-xs tracking-wide text-red-600">Login failed. Try another email/password or login you with OAuth2</span>
+              </div>
+              <div class="flex">
+                  <button class="w-60 px-6 py-2 mt-4 text-white-600 font-bold bg-black text-white rounded-lg hover:bg-grey-900">Login</button>
+                  <button class="px-6 py-2 mt-4 text-dark rounded-lg hover:bg-grey-900" type="button" (click)="register()">
+                    <div class="flex items-center">
+                      Register
+                      <svg xmlns="http://www.w3.org/2000/svg" class="pl-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
+                  </button>
+              </div>
+              <hr class="my-8" />
+              <div class="flex items-center justify-center gap-4">
+                <button
+                    type="button" (click)="loginWithMicrosoft()"
+                    class="flex items-center justify-center w-full px-4 py-2 text-sm text-white text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 focus:border-gray-500">
+                    <div class="w-4 h-4 mr-2">
+                      <img src="assets/microsoft-icon.svg" alt="Microsoft"/>
+                    </div>
+                    Microsoft
+                </button>
+                <button
+                    type="button" (click)="loginWithGoogle()"
+                    class="flex items-center justify-center w-full px-4 py-2 text-sm text-white text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 focus:border-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        class="w-4 h-4 mr-2" viewBox="0 0 48 48">
+                        <defs>
+                            <path id="a"
+                                d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z" />
+                        </defs>
+                        <clipPath id="b">
+                            <use xlink:href="#a" overflow="visible" />
+                        </clipPath>
+                        <path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z" />
+                        <path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z" />
+                        <path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z" />
+                        <path clip-path="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z" />
+                    </svg>Google
+                </button>
+            </div>
+            <div class="flex items-center justify-center gap-4 pt-4">
+              <button
+                  type="button" (click)="loginWithFacebook()"
+                  class="w-50 flex items-center justify-center w-full px-4 py-2 text-sm text-white text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 focus:border-gray-500">
+                  <div class="w-4 h-4 mr-2">
+                    <img src="assets/facebook-icon.svg" alt="Facebook"/>
+                  </div>
+                  Facebook
+              </button>
+            </div>
+          </div>
+      </form>
+  </div>
+</div>

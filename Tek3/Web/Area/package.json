@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "cordova-plugin-facebook4": "^6.4.0"
+  }
+}

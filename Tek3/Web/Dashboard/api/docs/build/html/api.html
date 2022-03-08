@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>api module &mdash; Dashboard 0.1 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="app module" href="app.html" />
+    <link rel="prev" title="api" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Dashboard
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">api</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">connection module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Dashboard</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">api</a> &raquo;</li>
+      <li>api module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="module-api">
+<span id="api-module"></span><h1>api module<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="api.API">
+<em class="property">class </em><code class="descclassname">api.</code><code class="descname">API</code><span class="sig-paren">(</span><em>app</em>, <em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="api.API.add_widget">
+<code class="descname">add_widget</code><span class="sig-paren">(</span><em>idUser</em>, <em>service</em>, <em>title</em>, <em>coords</em>, <em>date</em>, <em>city</em>, <em>urlProfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.add_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.add_widget" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.checkAccountExists">
+<code class="descname">checkAccountExists</code><span class="sig-paren">(</span><em>email</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.checkAccountExists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.checkAccountExists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.createAccount">
+<code class="descname">createAccount</code><span class="sig-paren">(</span><em>email</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.createAccount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.createAccount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.createAccountOAuth2">
+<code class="descname">createAccountOAuth2</code><span class="sig-paren">(</span><em>idOAuth2</em>, <em>email</em>, <em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.createAccountOAuth2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.createAccountOAuth2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.delete_widget_by_id">
+<code class="descname">delete_widget_by_id</code><span class="sig-paren">(</span><em>idWidget</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.delete_widget_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.delete_widget_by_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.getAccountOAuth2">
+<code class="descname">getAccountOAuth2</code><span class="sig-paren">(</span><em>email</em>, <em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.getAccountOAuth2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.getAccountOAuth2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.getGithubAccount">
+<code class="descname">getGithubAccount</code><span class="sig-paren">(</span><em>githubNameAccount</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.getGithubAccount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.getGithubAccount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.getIdFromEmail">
+<code class="descname">getIdFromEmail</code><span class="sig-paren">(</span><em>email</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.getIdFromEmail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.getIdFromEmail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_channel_ID">
+<code class="descname">get_channel_ID</code><span class="sig-paren">(</span><em>youtubeChannelName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_channel_ID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_channel_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_cryptocurrency_convertor">
+<code class="descname">get_cryptocurrency_convertor</code><span class="sig-paren">(</span><em>first</em>, <em>second</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_cryptocurrency_convertor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_cryptocurrency_convertor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_currency_convertor">
+<code class="descname">get_currency_convertor</code><span class="sig-paren">(</span><em>first</em>, <em>second</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_currency_convertor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_currency_convertor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_current_weather">
+<code class="descname">get_current_weather</code><span class="sig-paren">(</span><em>city</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_current_weather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_current_weather" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_current_weather_by_coords">
+<code class="descname">get_current_weather_by_coords</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_current_weather_by_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_current_weather_by_coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_forecast_weather">
+<code class="descname">get_forecast_weather</code><span class="sig-paren">(</span><em>city</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_forecast_weather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_forecast_weather" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_latest_playlist">
+<code class="descname">get_latest_playlist</code><span class="sig-paren">(</span><em>authToken</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_latest_playlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_latest_playlist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_latest_video">
+<code class="descname">get_latest_video</code><span class="sig-paren">(</span><em>youtubeChannelName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_latest_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_latest_video" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_number_subscribers_youtube_channel">
+<code class="descname">get_number_subscribers_youtube_channel</code><span class="sig-paren">(</span><em>youtubeChannelName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_number_subscribers_youtube_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_number_subscribers_youtube_channel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_photo_of_the_day_nasa">
+<code class="descname">get_photo_of_the_day_nasa</code><span class="sig-paren">(</span><em>date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_photo_of_the_day_nasa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_photo_of_the_day_nasa" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_photo_of_today_nasa">
+<code class="descname">get_photo_of_today_nasa</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_photo_of_today_nasa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_photo_of_today_nasa" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_recents_tracks">
+<code class="descname">get_recents_tracks</code><span class="sig-paren">(</span><em>authToken</em>, <em>tracksNumber</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_recents_tracks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_recents_tracks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_user">
+<code class="descname">get_user</code><span class="sig-paren">(</span><em>userId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.get_widgets_by_id">
+<code class="descname">get_widgets_by_id</code><span class="sig-paren">(</span><em>idUser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.get_widgets_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.get_widgets_by_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.isAlreadyLoginWithService">
+<code class="descname">isAlreadyLoginWithService</code><span class="sig-paren">(</span><em>idOAuth2</em>, <em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.isAlreadyLoginWithService"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.isAlreadyLoginWithService" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.login">
+<code class="descname">login</code><span class="sig-paren">(</span><em>email</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.loginAccount">
+<code class="descname">loginAccount</code><span class="sig-paren">(</span><em>email</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.loginAccount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.loginAccount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.login_oauth2">
+<code class="descname">login_oauth2</code><span class="sig-paren">(</span><em>idOAuth2</em>, <em>email</em>, <em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.login_oauth2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.login_oauth2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.register">
+<code class="descname">register</code><span class="sig-paren">(</span><em>email</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.save_city_weather_widget">
+<code class="descname">save_city_weather_widget</code><span class="sig-paren">(</span><em>idWidget</em>, <em>city</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.save_city_weather_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.save_city_weather_widget" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.save_date_nasa_photo_widget">
+<code class="descname">save_date_nasa_photo_widget</code><span class="sig-paren">(</span><em>idWidget</em>, <em>date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.save_date_nasa_photo_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.save_date_nasa_photo_widget" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.save_url_profile">
+<code class="descname">save_url_profile</code><span class="sig-paren">(</span><em>idWidget</em>, <em>urlProfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.save_url_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.save_url_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.save_widget_position">
+<code class="descname">save_widget_position</code><span class="sig-paren">(</span><em>idWidget</em>, <em>position</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.save_widget_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.save_widget_position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.search_nasa_image">
+<code class="descname">search_nasa_image</code><span class="sig-paren">(</span><em>search</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.search_nasa_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.search_nasa_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.signout">
+<code class="descname">signout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.signout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.signout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.API.update_url_cover">
+<code class="descname">update_url_cover</code><span class="sig-paren">(</span><em>userId</em>, <em>urlCover</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#API.update_url_cover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.API.update_url_cover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="api.generateHash">
+<code class="descclassname">api.</code><code class="descname">generateHash</code><span class="sig-paren">(</span><em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#generateHash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.generateHash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api.session_cache_path">
+<code class="descclassname">api.</code><code class="descname">session_cache_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#session_cache_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.session_cache_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api.verifyHash">
+<code class="descclassname">api.</code><code class="descname">verifyHash</code><span class="sig-paren">(</span><em>password</em>, <em>hash</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api.html#verifyHash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.verifyHash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="api" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app.html" class="btn btn-neutral float-right" title="app module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Juan &amp; Thanaël.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

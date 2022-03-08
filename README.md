@@ -13,6 +13,7 @@ Every projects I realized during my studies at Epitech are organized here. I pre
 |    :---:     |    :---:    |
 |First year| [*Tek* :one:](https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek1) |
 |Second year| [*Tek* :two:](https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek2) |
+|Third year| [*Tek* :three:](https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek3) |
 
 ----
 

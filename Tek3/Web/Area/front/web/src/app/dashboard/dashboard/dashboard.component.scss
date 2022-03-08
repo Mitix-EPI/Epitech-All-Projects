@@ -1,0 +1,20 @@
+html {
+    scroll-behavior: smooth;
+}
+
+.under-nav {
+    padding-top: 100px;
+}
+
+// mobile
+@media (max-width: 768px) {
+    .under-nav {
+        padding-top: 160px;
+    }
+}
+
+// Scrollbar
+.scrolling-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+}

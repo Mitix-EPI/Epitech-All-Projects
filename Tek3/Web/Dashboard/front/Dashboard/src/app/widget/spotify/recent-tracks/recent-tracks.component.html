@@ -1,0 +1,13 @@
+<label for="exampleSelect1" class="form-label mt-2">Select the number of tracks:</label>
+<select class="form-select" id="selectedNumber" [(ngModel)]="tracksNumber" (ngModelChange)="changeTracksNumber($event)">
+  <option>1</option>
+  <option>2</option>
+  <option>3</option>
+  <option>4</option>
+  <option>5</option>
+</select>
+<div class="mt-2" *ngIf="arrTracks.length !== 0">
+  <div class="mt-2 mb-2" *ngFor="let track of arrTracks" style="left: 0; width: 100%; height: 80px;position: relative;border-radius: 10px;overflow: hidden;">
+    <iframe [src]="track.url | safe" style="border: 0;" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+  </div>
+</div>

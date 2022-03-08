@@ -1,0 +1,64 @@
+version: "3.6"
+
+services:
+  db:
+    restart: always
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: board
+      MYSQL_USER: dashboard
+      MYSQL_PASSWORD: dashboard
+    cap_add:
+      - SYS_NICE
+    networks:
+      - api-tier
+      - db-admin
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+    networks:
+      - db-admin
+  api:
+    restart: always
+    depends_on:
+      - db
+    build: ./api
+    ports:
+      - 8080:8089
+    environment:
+      FLASK_DEBUG: 1
+    env_file:
+    - .env
+    networks:
+      - api-tier
+      - front-tier
+    volumes:
+      - './api:/app'
+  front:
+    restart: always
+    depends_on:
+      - db
+    build: 
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    networks:
+      - front-tier
+    volumes:
+      - ./front/Dashboard:/usr/src/app/Dashboard
+
+volumes:
+  db_data: {}
+
+networks:
+  front-tier: {}
+  api-tier: {}
+  db-admin: {}

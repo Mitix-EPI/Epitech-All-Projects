@@ -1,0 +1,212 @@
+<div class="row align-items-center justify-content-center h-100" *ngIf="isLoading !== 2; else elseLoading">
+  <div class="col">
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
+    </div>
+  </div>
+</div>
+
+<ng-template #elseLoading>
+  <app-header></app-header>
+
+  <ng-template #YoutubeServiceModalComponent let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title bold-text">Select A Youtube Service</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-6 col-6" (click)="addSubscribersYoutubeWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Show The Number Of Subscribers Of A Youtube Channel</h5>
+              <img class="card-img rounded img-fluid" src="https://www.youtube.com/img/desktop/yt_1200.png" alt="youtube image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-6" (click)="addLatestYoutubeVideoWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Show The Last Video Of A Youtube Channel</h5>
+              <img class="card-img rounded img-fluid" src="https://www.youtube.com/img/desktop/yt_1200.png" alt="youtube image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #GithubServiceModalComponent let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title bold-text">Select A Github Service</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-6 col-6" (click)="addGithubStatAccountWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Show The Profile Stat Of A Github Profile</h5>
+              <img class="card-img rounded img-fluid" src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="github image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-6" (click)="addGithubLanguageWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Display the language stats of a Github profile</h5>
+              <img class="card-img rounded img-fluid" src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="github image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #SpotifyServiceModalComponent let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title bold-text">Select A Spotify Service</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-6 col-6" (click)="addSpotifyRecentTracksWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">See Your Latest Played Tracks</h5>
+              <img class="card-img rounded img-fluid" src="https://www.scdn.co/i/_global/open-graph-default.png" alt="spotify image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-6"  (click)="addSpotifyPlaylistWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Show Your Weekly Playlist</h5>
+              <img class="card-img rounded img-fluid" src="https://www.scdn.co/i/_global/open-graph-default.png" alt="spotify image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- PRICE CONVERTER-->
+  <ng-template #PriceServiceModalComponent let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title bold-text">Select A Currency Service</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-6" (click)="addCurrencyConverter()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Convert To A Classic Currency</h5>
+              <img class="card-img rounded img-fluid" src="https://cdn-icons-png.flaticon.com/512/71/71123.png" alt="converter image" style="max-width: 200vh">
+            </div>
+          </div>
+        </div>
+        <div class="col-6" (click)="addCryptoConverter()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Convert To A Crypto Currency</h5>
+              <img class="card-img rounded img-fluid" src="https://romanorac.github.io/assets/images/2017-12-25-cryptocurrency-analysis-with-python-part2/bitcoin-ethereum-litecoin.png" alt="converter image" style="max-width: 200vh">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #WeatherServiceModalComponent let-modal>
+    <div class="modal-header bold-text">
+      <h4 class="modal-title">Select A Weather Service</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-6 col-6" (click)="addCurrentWeatherWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Display The Current Weather</h5>
+              <img class="card-img rounded img-fluid" src="https://images-na.ssl-images-amazon.com/images/I/41hzbXlmykL.png" alt="weather image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-6" (click)="addForecastWeatherWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Display The Weather Forecast</h5>
+              <img class="card-img rounded img-fluid" src="https://images-na.ssl-images-amazon.com/images/I/41hzbXlmykL.png" alt="weather image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #NASAServiceModalComponent let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Select A NASA Service</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4 col-4" (click)="addNASATodayWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Show The Today's Photo</h5>
+              <img class="card-img rounded img-fluid" src="https://images-na.ssl-images-amazon.com/images/I/516u2Y9HJ3L.png" alt="weather image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-4" (click)="addNASAXDayWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Show The Photo Of X Day</h5>
+              <img class="card-img rounded img-fluid" src="https://images-na.ssl-images-amazon.com/images/I/516u2Y9HJ3L.png" alt="weather image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-4" (click)="addNASAImageSearchWidget()">
+          <div class="card p-3 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">Search NASA Image</h5>
+              <img class="card-img rounded img-fluid" src="https://images-na.ssl-images-amazon.com/images/I/516u2Y9HJ3L.png" alt="weather image" style="max-width: 200vw">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="board">
+    <div *ngFor="let service of widgetsArray; let index = index">
+      <app-widget [service]="service" (mousedown)="setToFirst(index)" (touchstart)="setToFirst(index)" (closeWidget)="closeWidget(index)" [position]="index * 30"></app-widget>
+    </div>
+    <div ngbDropdown placement="top-right" class="d-inline-block btn-add">
+      <button type="button" id="dropdownBasic" ngbDropdownToggle class="btn btn-primary btn-circle btn-xl">+</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic">
+        <h3 class="text-center p-2 title-dropdown">Select service</h3>
+        <button ngbDropdownItem class="youtube-item" (click)="openServiceModal(YoutubeServiceModalComponent, 'ytb-modal', 'xl')">Youtube</button>
+        <div class="dropdown-divider"></div>
+        <button ngbDropdownItem class="github-item" (click)="openServiceModal(GithubServiceModalComponent, 'gh-modal', 'xl')">Github</button>
+        <div class="dropdown-divider"></div>
+        <button ngbDropdownItem class="spotify-item" (click)="openServiceModal(SpotifyServiceModalComponent, 'spotify-modal', 'xl')">Spotify</button>
+        <div class="dropdown-divider"></div>
+        <button ngbDropdownItem class="price-item" (click)="openServiceModal(PriceServiceModalComponent, 'price-modal', 'lg')">Currency Converter</button>
+        <div class="dropdown-divider"></div>
+        <button ngbDropdownItem class="weather-item" (click)="openServiceModal(WeatherServiceModalComponent, 'weather-modal', 'lg')">Weather</button>
+        <div class="dropdown-divider"></div>
+        <button ngbDropdownItem class="nasa-item" (click)="openServiceModal(NASAServiceModalComponent, 'nasa-modal', 'lg')">NASA</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+

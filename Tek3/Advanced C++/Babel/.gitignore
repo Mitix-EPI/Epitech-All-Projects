@@ -1,0 +1,6 @@
+build
+.dist
+.vscode
+*.o
+babel_client
+babel_server

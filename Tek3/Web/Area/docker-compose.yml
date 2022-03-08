@@ -1,0 +1,96 @@
+version: "3.6"
+
+services:
+
+  db: # MySQL
+    restart: always
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./db/data.sql:/docker-entrypoint-initdb.d/2.sql
+      - ./db/db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: area
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    cap_add:
+      - SYS_NICE
+    networks:
+      - server-tier
+      - db-admin
+
+  adminer: # Interface to administrate database
+    image: adminer
+    restart: always
+    ports:
+      - 8085:8080
+    networks:
+      - db-admin
+
+  server: # Fast API server
+    restart: always
+    depends_on:
+      - db
+    build: ./server
+    ports:
+      - 8080:8000
+    env_file:
+    - .env
+    networks:
+      - server-tier
+      - front-tier
+    volumes:
+      - ./server:/code
+
+  client_web: # Angular
+    restart: always
+    depends_on:
+      - db
+      - client_mobile
+    build:
+      context: ./front
+      dockerfile: ./web/Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - front-tier
+    volumes:
+      - ./front:/usr/src/app/Area
+      - /usr/src/app/Area/node_modules
+
+  client_mobile: # Ionic
+    depends_on:
+      - db
+    build:
+      context: ./front
+      dockerfile: ./mobile/Dockerfile
+    command: bash -c "
+        pwd && rm -rf .angular && rm -rf android && npm i &&
+        rm -rf ./src/app/services/* && rm -rf ./src/app/interfaces/* &&
+        cp -irf ../shared/src/lib/services/* ./src/app/services/. &&
+        cp -irf ../shared/src/lib/interfaces/* ./src/app/interfaces/. &&
+        ionic capacitor add android &&
+        ionic capacitor sync android &&
+        ionic capacitor copy android &&
+        cd android && ls && ./gradlew assembleDebug && cd .. &&
+        cp /usr/src/app/Area/mobile/android/app/build/outputs/apk/debug/app-debug.apk ./build/. &&
+        ionic serve --host=0.0.0.0 --port=8100"
+    ports:
+      - "8100:8100"
+    networks:
+      - front-tier
+    volumes:
+      - ./front:/usr/src/app/Area
+      - /usr/src/app/Area/mobile/node_modules
+      - /usr/src/app/Area/shared/node_modules
+
+volumes:
+  db_data: {}
+  build: {}
+
+networks:
+  front-tier: {}
+  server-tier: {}
+  db-admin: {}

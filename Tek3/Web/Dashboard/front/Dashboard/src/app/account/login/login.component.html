@@ -1,0 +1,53 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="container">
+	<div class="screen">
+		<div class="screen__content">
+
+			<form class="login" [formGroup]="form" (ngSubmit)="onSubmit()">
+				<div class="login__field">
+					<i class="login__icon fa fa-user"></i>
+					<input type="text" class="login__input" formControlName="email" placeholder="Email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Email is required</div>
+          </div>
+				</div>
+
+				<div class="login__field">
+					<i class="login__icon fa fa-lock"></i>
+					<input type="password" class="login__input" formControlName="password" placeholder="Password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+          <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="f.password.errors.required">Password is required</div>
+          </div>
+				</div>
+
+				<button class="button login__submit">
+					<span class="button__text">Log In Now</span>
+					<i class="button__icon fa fa-chevron-right"></i>
+				</button>
+        <button class="button login__register">
+					<span routerLink="../register">REGISTER</span>
+				</button>
+			</form>
+
+      <div class="social-login">
+        <h4>log in via</h4>
+        <div class="social-icon">
+          <a (click)="loginWithGoogle()"    class="social-login__icon fa fa-google">    </a>
+          <a (click)="loginWithFB()"        class="social-login__icon fa fa-facebook">  </a>
+          <a (click)="loginWithMicrosoft()" class="social-login__icon fa fa-windows">   </a>
+          <a (click)="loginWithVK()" class="social-login__icon fa fa-vk">   </a>
+        </div>
+      </div>
+
+		</div>
+
+		<div class="screen__background">
+			<span class="screen__background__shape screen__background__shape4"></span>
+			<span class="screen__background__shape screen__background__shape3"></span>
+			<span class="screen__background__shape screen__background__shape2"></span>
+			<span class="screen__background__shape screen__background__shape1"></span>
+		</div>
+
+	</div>
+</div>

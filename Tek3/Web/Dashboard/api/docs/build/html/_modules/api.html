@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>api &mdash; Dashboard 0.1 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Dashboard
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">api</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Dashboard</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>api</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for api</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">error</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">session</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">passlib.hash</span> <span class="kn">import</span> <span class="n">pbkdf2_sha256</span> <span class="k">as</span> <span class="n">sha256</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">spotipy</span>
+<span class="kn">from</span> <span class="nn">pyyoutube</span> <span class="kn">import</span> <span class="n">Api</span> <span class="k">as</span> <span class="n">YoutubeApi</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<div class="viewcode-block" id="generateHash"><a class="viewcode-back" href="../api.html#api.generateHash">[docs]</a><span class="k">def</span> <span class="nf">generateHash</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sha256</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">password</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="verifyHash"><a class="viewcode-back" href="../api.html#api.verifyHash">[docs]</a><span class="k">def</span> <span class="nf">verifyHash</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="nb">hash</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sha256</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="nb">hash</span><span class="p">)</span></div>
+
+<span class="n">caches_folder</span> <span class="o">=</span> <span class="s2">&quot;./.spotify_caches/&quot;</span>
+
+<div class="viewcode-block" id="session_cache_path"><a class="viewcode-back" href="../api.html#api.session_cache_path">[docs]</a><span class="k">def</span> <span class="nf">session_cache_path</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">caches_folder</span> <span class="o">+</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uuid&#39;</span><span class="p">)</span></div>
+
+<span class="n">defaultCover</span> <span class="o">=</span> <span class="s2">&quot;https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg&quot;</span>
+
+<div class="viewcode-block" id="API"><a class="viewcode-back" href="../api.html#api.API">[docs]</a><span class="k">class</span> <span class="nc">API</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
+        
+<div class="viewcode-block" id="API.isAlreadyLoginWithService"><a class="viewcode-back" href="../api.html#api.API.isAlreadyLoginWithService">[docs]</a>    <span class="k">def</span> <span class="nf">isAlreadyLoginWithService</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idOAuth2</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span>  <span class="c1"># reconnecting mysql</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM user WHERE idOAuth2 = &#39;</span><span class="si">%s</span><span class="s2">&#39; and service = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">idOAuth2</span><span class="p">,</span> <span class="n">service</span><span class="p">))</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Account : &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">account</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">account</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : isAlreadyLoginWithService&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="API.getIdFromEmail"><a class="viewcode-back" href="../api.html#api.API.getIdFromEmail">[docs]</a>    <span class="k">def</span> <span class="nf">getIdFromEmail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM user WHERE email = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">email</span><span class="p">))</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">account</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">account</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;error&quot;</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : getIdFromEmail</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;error&quot;</span></div>
+
+<div class="viewcode-block" id="API.checkAccountExists"><a class="viewcode-back" href="../api.html#api.API.checkAccountExists">[docs]</a>    <span class="k">def</span> <span class="nf">checkAccountExists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM user WHERE email = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">email</span><span class="p">)))</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">account</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : check_account_exists</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;error&quot;</span></div>
+        
+<div class="viewcode-block" id="API.createAccountOAuth2"><a class="viewcode-back" href="../api.html#api.API.createAccountOAuth2">[docs]</a>    <span class="k">def</span> <span class="nf">createAccountOAuth2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idOAuth2</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO `user` (`email`, `idOAuth2`, `service`, `urlCover`) VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">idOAuth2</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">defaultCover</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : Create Account</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+        
+<div class="viewcode-block" id="API.getAccountOAuth2"><a class="viewcode-back" href="../api.html#api.API.getAccountOAuth2">[docs]</a>    <span class="k">def</span> <span class="nf">getAccountOAuth2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span>  <span class="c1"># reconnecting mysql</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM user WHERE email = &#39;</span><span class="si">%s</span><span class="s2">&#39; AND service = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">service</span><span class="p">))</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;idOAuth2&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                <span class="s2">&quot;service&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                <span class="s2">&quot;urlCover&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : getAccountOAuth2 -&gt; &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;error&quot;</span></div>
+
+<div class="viewcode-block" id="API.createAccount"><a class="viewcode-back" href="../api.html#api.API.createAccount">[docs]</a>    <span class="k">def</span> <span class="nf">createAccount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hashedPassword</span> <span class="o">=</span> <span class="n">generateHash</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+            <span class="n">service</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO `user` (`email`, `password`, `service`, `urlCover`) VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">hashedPassword</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">defaultCover</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : Create Account</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="API.loginAccount"><a class="viewcode-back" href="../api.html#api.API.loginAccount">[docs]</a>    <span class="k">def</span> <span class="nf">loginAccount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM `user` WHERE `email` = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">email</span><span class="p">))</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">account</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">verifyHash</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="n">account</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;loggedin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Login successful&quot;</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAccountOAuth2</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">res</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Login or password does not match&quot;</span>
+                <span class="k">return</span> <span class="n">res</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Account doesn&#39;t exist&quot;</span>
+                <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : check_signin</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="API.signout"><a class="viewcode-back" href="../api.html#api.API.signout">[docs]</a>    <span class="k">def</span> <span class="nf">signout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;loggedin&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;signout successful&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="API.register"><a class="viewcode-back" href="../api.html#api.API.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">isExists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkAccountExists</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isExists</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Account already exists&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">createAccount</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Account created&quot;</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="API.login"><a class="viewcode-back" href="../api.html#api.API.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loginAccount</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="API.login_oauth2"><a class="viewcode-back" href="../api.html#api.API.login_oauth2">[docs]</a>    <span class="k">def</span> <span class="nf">login_oauth2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idOAuth2</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;login_oauth2&#39;</span><span class="p">,</span> <span class="n">idOAuth2</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isAlreadyLoginWithService</span><span class="p">(</span><span class="n">idOAuth2</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Already Login / Login Successful&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAccountOAuth2</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">user</span> <span class="o">!=</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Login Successful&quot;</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isAlreadyLoginWithService</span><span class="p">(</span><span class="n">idOAuth2</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">createAccountOAuth2</span><span class="p">(</span><span class="n">idOAuth2</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Account created + Login Successful&quot;</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAccountOAuth2</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Error registering OAuth2&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Error login_oauth2 x isAlreadyLoginWithService&quot;</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : login_oauth2</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="API.add_widget"><a class="viewcode-back" href="../api.html#api.API.add_widget">[docs]</a>    <span class="k">def</span> <span class="nf">add_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idUser</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">city</span><span class="p">,</span> <span class="n">urlProfile</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO `widget` (`user_id`, `service`, `title`, `city`, `date`, `urlProfile`,`x`, `y`) VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">idUser</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">city</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">urlProfile</span><span class="p">,</span> <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Widget added successfully&#39;</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;widgets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_widgets_by_id</span><span class="p">(</span><span class="n">idUser</span><span class="p">)[</span><span class="s1">&#39;widgets&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : add_widget</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.get_widgets_by_id"><a class="viewcode-back" href="../api.html#api.API.get_widgets_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_widgets_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idUser</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;widgets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM widget WHERE user_id = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">idUser</span><span class="p">))</span>
+            <span class="n">widgets</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">widgets</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">widgets</span><span class="p">:</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;widgets&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="s1">&#39;service&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                        <span class="s1">&#39;city&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                        <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+                        <span class="s1">&#39;urlProfile&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+                        <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
+                        <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">widget</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+                    <span class="p">})</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Widgets found successfully&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No Widgets found&quot;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_widgets_by_id</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.delete_widget_by_id"><a class="viewcode-back" href="../api.html#api.API.delete_widget_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">delete_widget_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idWidget</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DELETE FROM widget WHERE id = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">idWidget</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;widgets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_widgets_by_id</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])[</span><span class="s1">&#39;widgets&#39;</span><span class="p">]</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Widget deleted successfully&#39;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : delete_widget_by_id</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.save_widget_position"><a class="viewcode-back" href="../api.html#api.API.save_widget_position">[docs]</a>    <span class="k">def</span> <span class="nf">save_widget_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idWidget</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE widget SET x=</span><span class="si">%i</span><span class="s2">, y=</span><span class="si">%i</span><span class="s2"> WHERE id=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">idWidget</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Widget position saved successfully&#39;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : save_widget_position</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+            
+<div class="viewcode-block" id="API.get_photo_of_today_nasa"><a class="viewcode-back" href="../api.html#api.API.get_photo_of_today_nasa">[docs]</a>    <span class="k">def</span> <span class="nf">get_photo_of_today_nasa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="n">NASA_API_KEY</span> <span class="o">=</span> <span class="s2">&quot;vZR2hNKNdZqOtapcpWWIJhv7SvhAMmFPF1rmOOAr&quot;</span>
+      <span class="n">link</span> <span class="o">=</span> <span class="s2">&quot;https://api.nasa.gov/planetary/apod?api_key=&quot;</span> <span class="o">+</span> <span class="n">NASA_API_KEY</span>
+      <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+      <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+      <span class="k">return</span> <span class="n">data</span></div>
+  
+<div class="viewcode-block" id="API.get_photo_of_the_day_nasa"><a class="viewcode-back" href="../api.html#api.API.get_photo_of_the_day_nasa">[docs]</a>    <span class="k">def</span> <span class="nf">get_photo_of_the_day_nasa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+        <span class="n">NASA_API_KEY</span> <span class="o">=</span> <span class="s2">&quot;vZR2hNKNdZqOtapcpWWIJhv7SvhAMmFPF1rmOOAr&quot;</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="s2">&quot;https://api.nasa.gov/planetary/apod?api_key=&quot;</span> <span class="o">+</span> <span class="n">NASA_API_KEY</span> <span class="o">+</span> <span class="s2">&quot;&amp;date=&quot;</span> <span class="o">+</span> <span class="n">date</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+    
+<div class="viewcode-block" id="API.search_nasa_image"><a class="viewcode-back" href="../api.html#api.API.search_nasa_image">[docs]</a>    <span class="k">def</span> <span class="nf">search_nasa_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">link</span> <span class="o">=</span> <span class="s2">&quot;https://images-api.nasa.gov/search?q=&quot;</span> <span class="o">+</span> <span class="n">search</span> <span class="o">+</span> <span class="s1">&#39;&amp;media_type=image&#39;</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">][</span><span class="s1">&#39;items&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : save_url_profile</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+    
+<div class="viewcode-block" id="API.save_url_profile"><a class="viewcode-back" href="../api.html#api.API.save_url_profile">[docs]</a>    <span class="k">def</span> <span class="nf">save_url_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idWidget</span><span class="p">,</span> <span class="n">urlProfile</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE widget SET urlProfile=&#39;</span><span class="si">%s</span><span class="s2">&#39; WHERE id=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">urlProfile</span><span class="p">,</span> <span class="n">idWidget</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;UrlProfile saved successfully&#39;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : save_url_profile</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+    
+<div class="viewcode-block" id="API.save_date_nasa_photo_widget"><a class="viewcode-back" href="../api.html#api.API.save_date_nasa_photo_widget">[docs]</a>    <span class="k">def</span> <span class="nf">save_date_nasa_photo_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idWidget</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE widget SET date=&#39;</span><span class="si">%s</span><span class="s2">&#39; WHERE id=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">idWidget</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Date saved successfully&#39;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : save_date_nasa_photo_widget</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+  
+<div class="viewcode-block" id="API.update_url_cover"><a class="viewcode-back" href="../api.html#api.API.update_url_cover">[docs]</a>    <span class="k">def</span> <span class="nf">update_url_cover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userId</span><span class="p">,</span> <span class="n">urlCover</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE user SET urlCover = &#39;</span><span class="si">%s</span><span class="s2">&#39; WHERE id = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">urlCover</span><span class="p">,</span> <span class="n">userId</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;OK&quot;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">IntegrityError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;failed to insert values&quot;</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Failed to insert values&quot;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : update_url_cover</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.get_user"><a class="viewcode-back" href="../api.html#api.API.get_user">[docs]</a>    <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userId</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM user WHERE id = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">userId</span><span class="p">))</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">account</span><span class="p">):</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="s2">&quot;idOAuth2&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="s2">&quot;service&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                    <span class="s2">&quot;urlCover&quot;</span><span class="p">:</span> <span class="n">account</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Account doesn&#39;t exist&quot;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_user</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="API.get_latest_playlist"><a class="viewcode-back" href="../api.html#api.API.get_latest_playlist">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_playlist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authToken</span><span class="p">):</span>
+      <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="n">spotipy</span><span class="o">.</span><span class="n">Spotify</span><span class="p">(</span><span class="n">auth</span><span class="o">=</span><span class="n">authToken</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">current_user_playlists</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="s1">&#39;items&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+      <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_latest_playlist</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="API.get_recents_tracks"><a class="viewcode-back" href="../api.html#api.API.get_recents_tracks">[docs]</a>    <span class="k">def</span> <span class="nf">get_recents_tracks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authToken</span><span class="p">,</span> <span class="n">tracksNumber</span><span class="p">):</span>
+      <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="n">tracksNumber</span><span class="p">:</span>
+          <span class="n">tracksNumber</span> <span class="o">=</span> <span class="mi">3</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="n">spotipy</span><span class="o">.</span><span class="n">Spotify</span><span class="p">(</span><span class="n">auth</span><span class="o">=</span><span class="n">authToken</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">current_user_recently_played</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">tracksNumber</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span>
+      <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_recents_tracks</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+    
+<div class="viewcode-block" id="API.get_current_weather"><a class="viewcode-back" href="../api.html#api.API.get_current_weather">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_weather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">city</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">apiKey</span> <span class="o">=</span> <span class="s1">&#39;e381bdc76673f44388c308956e09f15f&#39;</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="s1">&#39;https://api.openweathermap.org/data/2.5/weather?q=&#39;</span> <span class="o">+</span> <span class="n">city</span> <span class="o">+</span> <span class="s1">&#39;&amp;appid=&#39;</span> <span class="o">+</span> <span class="n">apiKey</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;main&#39;</span><span class="p">][</span><span class="s1">&#39;temp&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mf">273.15</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_current_weather</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.get_current_weather_by_coords"><a class="viewcode-back" href="../api.html#api.API.get_current_weather_by_coords">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_weather_by_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">apiKey</span> <span class="o">=</span> <span class="s1">&#39;e381bdc76673f44388c308956e09f15f&#39;</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="s1">&#39;https://api.openweathermap.org/data/2.5/weather?lat=&#39;</span> <span class="o">+</span> <span class="n">lat</span> <span class="o">+</span> <span class="s1">&#39;&amp;lon=&#39;</span> <span class="o">+</span> <span class="n">lon</span> <span class="o">+</span> <span class="s1">&#39;&amp;appid=&#39;</span> <span class="o">+</span> <span class="n">apiKey</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;main&#39;</span><span class="p">][</span><span class="s1">&#39;temp&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mf">273.15</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_current_weather_by_coords</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="API.save_city_weather_widget"><a class="viewcode-back" href="../api.html#api.API.save_city_weather_widget">[docs]</a>    <span class="k">def</span> <span class="nf">save_city_weather_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idWidget</span><span class="p">,</span> <span class="n">city</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE widget SET city=&#39;</span><span class="si">%s</span><span class="s2">&#39; WHERE id=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">city</span><span class="p">,</span> <span class="n">idWidget</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;City saved successfully&#39;</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : save_city_weather_widget</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.get_forecast_weather"><a class="viewcode-back" href="../api.html#api.API.get_forecast_weather">[docs]</a>    <span class="k">def</span> <span class="nf">get_forecast_weather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">city</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">apiKey</span> <span class="o">=</span> <span class="s1">&#39;e97561e3e83949a8a01104032212611&#39;</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="s1">&#39;http://api.weatherapi.com/v1/forecast.json?key=&#39;</span> <span class="o">+</span> <span class="n">apiKey</span> <span class="o">+</span> <span class="s1">&#39;&amp;q=&#39;</span> <span class="o">+</span> <span class="n">city</span> <span class="o">+</span> <span class="s1">&#39;&amp;days=3&amp;aqi=no&amp;alerts=no&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_current_weather</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+            
+<div class="viewcode-block" id="API.get_currency_convertor"><a class="viewcode-back" href="../api.html#api.API.get_currency_convertor">[docs]</a>    <span class="k">def</span> <span class="nf">get_currency_convertor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">CURRENCY_API_KEY</span> <span class="o">=</span> <span class="s2">&quot;2c08c7dfd312fa2156bb&quot;</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="s1">&#39;https://free.currconv.com/api/v7/convert?q=&#39;</span> <span class="o">+</span> <span class="n">first</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">second</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span>  <span class="n">second</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">first</span> <span class="o">+</span> <span class="s1">&#39;&amp;compact=ultra&amp;apiKey=&#39;</span> <span class="o">+</span> <span class="n">CURRENCY_API_KEY</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_currency_convertor</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="API.get_cryptocurrency_convertor"><a class="viewcode-back" href="../api.html#api.API.get_cryptocurrency_convertor">[docs]</a>    <span class="k">def</span> <span class="nf">get_cryptocurrency_convertor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+        <span class="n">res</span><span class="o">=</span> <span class="p">{}</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="s1">&#39;https://min-api.cryptocompare.com/data/price?fsym=&#39;</span><span class="o">+</span> <span class="n">first</span> <span class="o">+</span> <span class="s1">&#39;&amp;tsyms=&#39;</span> <span class="o">+</span> <span class="n">second</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_cryptocurrency_convertor</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="API.get_number_subscribers_youtube_channel"><a class="viewcode-back" href="../api.html#api.API.get_number_subscribers_youtube_channel">[docs]</a>    <span class="k">def</span> <span class="nf">get_number_subscribers_youtube_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">youtubeChannelName</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">apiKey</span> <span class="o">=</span> <span class="s1">&#39;AIzaSyBOCLFDDz4wHFmatH-fPxsjjRnBfPzcOFQ&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">api</span> <span class="o">=</span> <span class="n">YoutubeApi</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">apiKey</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">search_by_keywords</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">youtubeChannelName</span><span class="p">,</span> <span class="n">search_type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">],</span> <span class="n">count</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">idChannel</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">snippet</span><span class="o">.</span><span class="n">channelId</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_channel_info</span><span class="p">(</span><span class="n">channel_id</span><span class="o">=</span><span class="n">idChannel</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">items</span><span class="p">):</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;subscriberCount&#39;</span><span class="p">:</span> <span class="n">channel</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">statistics</span><span class="o">.</span><span class="n">subscriberCount</span><span class="p">,</span>
+                    <span class="s1">&#39;channel&#39;</span><span class="p">:</span> <span class="n">channel</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">snippet</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Youtube url not updated&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;Channel not found.&#39;</span>
+                <span class="p">}</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_number_subscribers_youtube_channel</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Youtube Data API exceded&#39;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.get_channel_ID"><a class="viewcode-back" href="../api.html#api.API.get_channel_ID">[docs]</a>    <span class="k">def</span> <span class="nf">get_channel_ID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">youtubeChannelName</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">apiKey</span> <span class="o">=</span> <span class="s1">&#39;AIzaSyBOCLFDDz4wHFmatH-fPxsjjRnBfPzcOFQ&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">api</span> <span class="o">=</span> <span class="n">YoutubeApi</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">apiKey</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">search_by_keywords</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">youtubeChannelName</span><span class="p">,</span> <span class="n">search_type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">],</span> <span class="n">count</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">idChannel</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">snippet</span><span class="o">.</span><span class="n">channelId</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">idChannel</span><span class="p">):</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idChannel</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Youtube url not updated&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;Channel not found.&#39;</span>
+                <span class="p">}</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_channel_ID</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Youtube Data API exceded&#39;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.get_latest_video"><a class="viewcode-back" href="../api.html#api.API.get_latest_video">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">youtubeChannelName</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">apiKey</span> <span class="o">=</span> <span class="s1">&#39;AIzaSyBOCLFDDz4wHFmatH-fPxsjjRnBfPzcOFQ&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">api</span> <span class="o">=</span> <span class="n">YoutubeApi</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">apiKey</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">search_by_keywords</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">youtubeChannelName</span><span class="p">,</span> <span class="n">search_type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">],</span> <span class="n">count</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">idChannel</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">snippet</span><span class="o">.</span><span class="n">channelId</span>
+            <span class="n">link</span> <span class="o">=</span> <span class="s1">&#39;https://www.googleapis.com/youtube/v3/search?key=&#39;</span> <span class="o">+</span> <span class="n">apiKey</span> <span class="o">+</span> <span class="s1">&#39;&amp;channelId=&#39;</span> <span class="o">+</span> <span class="n">idChannel</span> <span class="o">+</span> <span class="s1">&#39;&amp;part=snippet,id&amp;order=date&amp;maxResults=2&#39;</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Youtube url not updated&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;Channel not found.&#39;</span>
+                <span class="p">}</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : get_channel_ID</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Youtube Data API exceded&#39;</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+        
+<div class="viewcode-block" id="API.getGithubAccount"><a class="viewcode-back" href="../api.html#api.API.getGithubAccount">[docs]</a>    <span class="k">def</span> <span class="nf">getGithubAccount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">githubNameAccount</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">githubApiKey</span> <span class="o">=</span> <span class="s1">&#39;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&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">link</span> <span class="o">=</span> <span class="s1">&#39;https://api.github.com/search/users?q=&#39;</span> <span class="o">+</span> <span class="n">githubNameAccount</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;total_count&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+                    <span class="k">return</span> <span class="n">res</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Github account not found&#39;</span>
+                    <span class="k">return</span> <span class="n">res</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Error response github api&#39;</span>
+                <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error : getGithubAccount</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;internal error&quot;</span>
+            <span class="k">return</span> <span class="n">res</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Juan &amp; Thanaël.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

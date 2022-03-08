@@ -1,0 +1,39 @@
+ion-list-header {
+    padding-bottom: 12px;
+}
+
+ion-content {
+    --background: #f2f2f7;
+}
+
+.gap-2 {
+    grid-gap: 0.5rem;
+    gap: 0.5rem;
+}
+
+.grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid {
+    display: grid;
+}
+
+.p-3 {
+    padding: 0.75rem;
+}
+.border-2 {
+    border-width: 2px;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.next-button {
+    padding-top: 1em;
+}
+
+.item-space {
+    padding-bottom: 1em;
+}

@@ -1,0 +1,32 @@
+# TODO Not enabled Traefik
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: worker
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: epitechcontent/t-dop-600-worker:k8s
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+            - secretRef:
+                name: postgres-secret
+            - configMapRef:
+                name: redis-config
+          resources:
+            limits:
+              memory: "256M"
+      volumes:
+        - name: postgredb
+      restartPolicy: Always

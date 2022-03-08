@@ -1,0 +1,35 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title style="display: flex; justify-content: space-between;">
+      #{{ reaction[0] }}
+      <ion-icon (click)="deleteReaction(reaction[0])" className="center-right" name="trash" style="color: red;"></ion-icon>
+    </ion-card-title>
+  </ion-card-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ng-container *ngTemplateOutlet="reactionServiceDisplay; context:{item: reaction[2]}">
+        </ng-container>
+      </ion-col>
+      <ion-col>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+      </ion-col>
+      <ion-col>
+        <ng-container *ngTemplateOutlet="reactionServiceDisplay; context:{item: reaction[3]}">
+        </ng-container>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>
+
+<ng-template #reactionServiceDisplay let-item="item">
+  <img [src]="item.service.icon" style="width: 32px; height: 32px; margin-bottom: 10px;" /> {{item.service.display_name}}
+  <ion-title>{{item.display_name}}</ion-title>
+    <h4>Parameters</h4>
+    <ion-item class="text-center" *ngFor="let arg of item.arguments">
+      {{arg.display_name}}: {{arg.value}}
+    </ion-item>
+</ng-template>

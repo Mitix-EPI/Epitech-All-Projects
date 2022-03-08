@@ -1,0 +1,23 @@
+
+<ion-content [fullscreen]="true">
+  <ion-toolbar>
+    <ion-buttons slot="primary">
+      <ion-button  (click)="logout()">
+        <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <section>
+    <ion-button [routerLink]="['/dashboard/add-service']" expand="block" color="dark">+ Add a service</ion-button>
+  </section>
+  
+  <ion-list *ngIf="!setupMode && reactions.length > 0">
+    <app-action *ngFor="let reaction of reactions; trackBy: trackItem" [reaction]="reaction" (newItemEvent)="deleteAction($event)"></app-action>
+  </ion-list>
+</ion-content>

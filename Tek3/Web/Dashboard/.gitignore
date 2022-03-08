@@ -1,0 +1,7 @@
+api/client_secret.json
+api/.flask_session
+api/.spotify_caches
+api/flask_session
+api/.spotify_caches
+api/__pycache__/
+.env

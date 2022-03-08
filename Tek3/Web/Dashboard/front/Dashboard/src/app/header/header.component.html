@@ -1,0 +1,27 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Cover Update</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"> </button>
+  </div>
+  <div class="modal-body">
+    <input type="text" [(ngModel)]="newUrl" class="url__input" placeholder="Paste URL Here To Change Your Cover">
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Update')">Save</button>
+  </div>
+</ng-template>
+
+<div style="height: 16rem;" [ngStyle]="{'background-image': 'url(' + urlCover + ')'}" class="img-fluid bg-cover text-white">
+  <div class="container py-5 text-center">
+      <h1 class="display-2 bold-text">Dashboard</h1>
+      <h4>{{ myDate | amDateFormat: 'ddd Do HH:mm:ss' }}</h4>
+      <button type="button" class="btn btn-success btn-lg m-3" (click)="changeCover(content)">Change cover</button>
+  </div>
+</div>
+<div *ngIf="userService.isLoggedIn" class="position-absolute top-0 end-0 p-3">
+  <button class="btn btn-info btn-md" (click)="logout()">
+    <i class="bi bi-box-arrow-left"></i> Log out
+  </button>
+
+</div>
+

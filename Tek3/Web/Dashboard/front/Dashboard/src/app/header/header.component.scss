@@ -1,0 +1,18 @@
+.bg-cover {
+  background-size: cover !important;
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+.url__input {
+	border: none;
+	border-bottom: 2px solid #D1D1D4;
+	background: none;
+	padding: 10px;
+	padding-left: 24px;
+	font-weight: 700;
+	width: 100%;
+	transition: .2s;
+}

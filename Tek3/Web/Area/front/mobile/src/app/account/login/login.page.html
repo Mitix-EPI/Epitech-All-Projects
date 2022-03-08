@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="text-center">
+      Area
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="auth-form">
+  <ion-grid>
+    <ion-row>
+      <ion-col align-self-center>
+        <form [formGroup]="validations_form" (ngSubmit)="login(validations_form.value)">
+          <ion-item lines="full">
+            <ion-label position="floating">Server IP</ion-label>
+            <ion-input type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="serverIp"></ion-input>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-label position="floating">Email</ion-label>
+            <ion-input type="text" formControlName="email" required></ion-input>
+          </ion-item>
+          <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.email">
+              <div class="error-message"
+                *ngIf="validations_form.get('email').hasError(validation.type) && (validations_form.get('email').dirty || validations_form.get('email').touched)">
+                {{ validation.message }}
+              </div>
+            </ng-container>
+          </div>
+          <ion-item lines="full">
+            <ion-label position="floating">Password</ion-label>
+            <ion-input type="password" formControlName="password" required></ion-input>
+          </ion-item>
+          <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.password">
+              <div class="error-message"
+                *ngIf="validations_form.get('password').hasError(validation.type) && (validations_form.get('password').dirty || validations_form.get('password').touched)">
+                {{ validation.message }}
+              </div>
+            </ng-container>
+          </div>
+          <ion-row>
+            <ion-col>
+              <ion-button type="submit" color="danger" expand="block">Log In</ion-button>
+            </ion-col>
+          </ion-row>
+        </form>
+        <label class="error-message">{{errorMessage}}</label>
+        <ion-row class="ion-padding">
+          <ion-item-divider>
+            <div class="text-center">or</div>
+          </ion-item-divider>
+        </ion-row>
+        <ion-button expand="block" (click)="facebookLogin()">
+          <ion-icon slot="start" name="logo-facebook"></ion-icon>
+          Log In with Facebook
+        </ion-button>
+        <ion-button [routerLink]="['/register']" expand="block" color="dark">Register</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

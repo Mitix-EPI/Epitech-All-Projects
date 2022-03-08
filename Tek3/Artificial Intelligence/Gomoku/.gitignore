@@ -1,0 +1,4 @@
+build
+__pycache__
+pbrain-gomoku-ai.exe.spec
+dist

@@ -1,0 +1,23 @@
+<div *ngIf="service.date !== 'null'">
+  <form class="form-inline">
+    <div class="form-group">
+      <div class="input-group">
+        <input class="form-control" placeholder="yyyy/mm/dd"
+                (ngModelChange)="changeDate($event)"
+               name="datePicker" #c2="ngModel" [(ngModel)]="model" ngbDatepicker #datePicker="ngbDatepicker"
+               [maxDate]="{ year: maxDate.getFullYear(), month: maxDate.getMonth() + 1, day: maxDate.getUTCDate()}">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button">
+            <i class="bi bi-calendar"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <img *ngIf="mediaType === 'img' && nasaImgUrl !== ''" class="card-img rounded img-fluid mt-2" [src]="nasaImgUrl | safe" alt="nasa image" >
+  <iframe class="mt-2" *ngIf="mediaType === 'video'" width="100%"
+  [src]="nasaImgUrl | safe"
+  style="border: 0;"
+  allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+  </iframe>
+</div>

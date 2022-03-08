@@ -1,0 +1,44 @@
+<div *ngIf="loading" class="static absolute top-0 w-full overflow-hidden">
+  <div class="w-1/2 inline-block relative fluentProgressBar-waiting"></div>
+</div>
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
+      <div class="flex justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-dark-600" fill="black" viewBox="0 0 24 24">
+            <path fill="black" d="M3.015,4.779h1.164V3.615H3.015V4.779z M18.73,1.869H1.269c-0.322,0-0.582,0.26-0.582,0.582v15.133
+              c0,0.322,0.26,0.582,0.582,0.582H18.73c0.321,0,0.582-0.26,0.582-0.582V2.451C19.312,2.129,19.052,1.869,18.73,1.869z
+               M18.148,16.42c0,0.322-0.261,0.582-0.582,0.582H2.433c-0.322,0-0.582-0.26-0.582-0.582V6.525h16.297V16.42z M18.148,5.361H1.851
+              V3.615c0-0.322,0.26-0.582,0.582-0.582h15.133c0.321,0,0.582,0.26,0.582,0.582V5.361z M7.671,4.779h1.165V3.615H7.671V4.779z
+               M5.344,4.779h1.164V3.615H5.344V4.779z"></path>
+          </svg>
+      </div>
+      <h3 class="text-2xl font-bold text-center">Register to your account</h3>
+      <form [formGroup]="form" (ngSubmit)="register()" #myform="ngForm">
+          <div class="mt-4">
+              <div>
+                  <label class="block required" for="email">Email</label>
+                          <input type="text" placeholder="Email"
+                              class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" formControlName="email" id="email">
+                          <span *ngIf="isFieldValid('email')" class="text-xs tracking-wide text-red-600">Email field is required </span>
+              </div>
+              <div class="mt-4">
+                  <label class="block required">Password</label>
+                          <input type="password" placeholder="Password"
+                              class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"  formControlName="password" id="password">
+                          <span *ngIf="isFieldValid('password')" class="text-xs tracking-wide text-red-600">Password field is required </span>
+              </div>
+              <div class="flex">
+                <button class="w-60 px-6 py-2 mt-4 text-white-600 font-bold bg-black text-white rounded-lg hover:bg-grey-900">Register</button>
+                <button class="px-6 py-2 mt-4 text-dark rounded-lg hover:bg-grey-900" type="button" (click)="login()">
+                  <div class="flex items-center">
+                    Login
+                    <svg xmlns="http://www.w3.org/2000/svg" class="pl-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </div>
+                </button>
+              </div>
+          </div>
+      </form>
+  </div>
+</div>

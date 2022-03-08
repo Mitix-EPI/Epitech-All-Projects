@@ -1,0 +1,38 @@
+<div class="text-center">
+    <div class="row align-items-end">
+      <div class="col">
+        <div class="form-group">
+          <label for="Base Currency" class="form-label mt-4">Base Currency</label>
+          <select class="form-select" id="base-currency" [(ngModel)]="baseCurrency" (ngModelChange)="changeBaseCurrency($event)">
+            <option>EUR</option>
+            <option>USD</option>
+            <option>CAD</option>
+            <option>GBP</option>
+            <option>BTC</option>
+          </select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label for="Base Currency" class="form-label mt-4">Target Currency</label>
+          <select class="form-select" id="target-currency" [(ngModel)]="targetCurrency" (ngModelChange)="changeTargetCurrency($event)">
+            <option>EUR</option>
+            <option>USD</option>
+            <option>CAD</option>
+            <option>GBP</option>
+            <option>BTC</option>
+          </select>
+        </div>
+      </div>
+      <div class="col col-centered">
+        <button type="button" class="btn btn-warning" (click)="convertCurrency()">Convert</button>
+      </div>
+    </div>
+    <div class="progress mt-2" *ngIf="isLoading">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
+    </div>
+    <div  class="row" *ngIf="!isLoading && convertedCurrency">
+      <label for="typeahead-prevent-manual-entry">Converted Currency</label>
+      <h4>{{convertedCurrency}}</h4>
+    </div>
+</div>

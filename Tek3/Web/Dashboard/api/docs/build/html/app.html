@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app module &mdash; Dashboard 0.1 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="connection module" href="connection.html" />
+    <link rel="prev" title="api module" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Dashboard
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">api</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html">api module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">connection module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Dashboard</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">api</a> &raquo;</li>
+      <li>app module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/app.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="module-app">
+<span id="app-module"></span><h1>app module<a class="headerlink" href="#module-app" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="app.about">
+<code class="descclassname">app.</code><code class="descname">about</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#about"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.about" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /about.json -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.add_widget">
+<code class="descclassname">app.</code><code class="descname">add_widget</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#add_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.add_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /widget/add-widget -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.authenticate">
+<code class="descclassname">app.</code><code class="descname">authenticate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /users/authenticate -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.delete_widget">
+<code class="descclassname">app.</code><code class="descname">delete_widget</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#delete_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.delete_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /widget/delete-widget -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.documentation">
+<code class="descclassname">app.</code><code class="descname">documentation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#documentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /documentation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_channel_ID">
+<code class="descclassname">app.</code><code class="descname">get_channel_ID</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_channel_ID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_channel_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /youtube/get-channel-id -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_connection">
+<code class="descclassname">app.</code><code class="descname">get_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_connection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="app.get_cryptocurrency_convertor">
+<code class="descclassname">app.</code><code class="descname">get_cryptocurrency_convertor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_cryptocurrency_convertor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_cryptocurrency_convertor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /currency/crypto-convertor -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_currency_convertor">
+<code class="descclassname">app.</code><code class="descname">get_currency_convertor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_currency_convertor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_currency_convertor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /currency/currency-convertor -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_current_weather">
+<code class="descclassname">app.</code><code class="descname">get_current_weather</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_current_weather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_current_weather" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /weather/get-current-weather -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_current_weather_by_coords">
+<code class="descclassname">app.</code><code class="descname">get_current_weather_by_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_current_weather_by_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_current_weather_by_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /weather/get-current-weather-by-coords -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_forecast_weather">
+<code class="descclassname">app.</code><code class="descname">get_forecast_weather</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_forecast_weather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_forecast_weather" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /weather/get-forecast-weather -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_github_account">
+<code class="descclassname">app.</code><code class="descname">get_github_account</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_github_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_github_account" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /github/get-github-account -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_latest_playlist">
+<code class="descclassname">app.</code><code class="descname">get_latest_playlist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_latest_playlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_latest_playlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /spotify/get-latest-playlist -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_latest_video">
+<code class="descclassname">app.</code><code class="descname">get_latest_video</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_latest_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_latest_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /youtube/get-last-video -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_number_subscribers">
+<code class="descclassname">app.</code><code class="descname">get_number_subscribers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_number_subscribers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_number_subscribers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /youtube/number-subscribers -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_photo_of_the_day">
+<code class="descclassname">app.</code><code class="descname">get_photo_of_the_day</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_photo_of_the_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_photo_of_the_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /nasa/photo-of-the-day -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_photo_of_today">
+<code class="descclassname">app.</code><code class="descname">get_photo_of_today</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_photo_of_today"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_photo_of_today" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /nasa/photo-of-today -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_random_string">
+<code class="descclassname">app.</code><code class="descname">get_random_string</code><span class="sig-paren">(</span><em>length</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_random_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_random_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="app.get_recents_tracks">
+<code class="descclassname">app.</code><code class="descname">get_recents_tracks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_recents_tracks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_recents_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /spotify/get-latest-playlist -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_user">
+<code class="descclassname">app.</code><code class="descname">get_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /users/get-user -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.get_widgets_by_user">
+<code class="descclassname">app.</code><code class="descname">get_widgets_by_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#get_widgets_by_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.get_widgets_by_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /widget/get-widgets-by-user -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.index">
+<code class="descclassname">app.</code><code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="app.login_is_required">
+<code class="descclassname">app.</code><code class="descname">login_is_required</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#login_is_required"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.login_is_required" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="app.protected_area">
+<code class="descclassname">app.</code><code class="descname">protected_area</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#protected_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.protected_area" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="app.register">
+<code class="descclassname">app.</code><code class="descname">register</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /users/register -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.save_city_weather_widget">
+<code class="descclassname">app.</code><code class="descname">save_city_weather_widget</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#save_city_weather_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.save_city_weather_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /weather/save-city-to-weather-widget -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.save_date_nasa_photo_widget">
+<code class="descclassname">app.</code><code class="descname">save_date_nasa_photo_widget</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#save_date_nasa_photo_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.save_date_nasa_photo_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /nasa/save-date-to-nasa-photo-widget -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.save_url_profile">
+<code class="descclassname">app.</code><code class="descname">save_url_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#save_url_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.save_url_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /widget/save-url-profile -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.save_widget_position">
+<code class="descclassname">app.</code><code class="descname">save_widget_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#save_widget_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.save_widget_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /widget/save-widget-position -&gt; Method=POST</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.search_nasa_image">
+<code class="descclassname">app.</code><code class="descname">search_nasa_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#search_nasa_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.search_nasa_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /nasa/search-image -&gt; Method=GET</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="app.session_cache_path">
+<code class="descclassname">app.</code><code class="descname">session_cache_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#session_cache_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.session_cache_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="app.update_url_cover">
+<code class="descclassname">app.</code><code class="descname">update_url_cover</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app.html#update_url_cover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#app.update_url_cover" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route : /users/update-url-cover -&gt; Method=POST</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-left" title="api module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="connection.html" class="btn btn-neutral float-right" title="connection module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Juan &amp; Thanaël.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

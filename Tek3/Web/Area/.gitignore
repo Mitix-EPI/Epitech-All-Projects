@@ -1,0 +1,7 @@
+**/node_modules
+build/*
+db/db_data/*
+server/app/**/__pycache__
+.env
+**/__pycache__
+**/node_modules 

@@ -1,0 +1,89 @@
+/*
+** EPITECH PROJECT, 2021
+** main.cpp
+** File description:
+** main.cpp
+*/
+
+#include "server/database/database.hpp"
+#include "commons/exceptions.hpp"
+
+int main(int ac, char *av[])
+{
+    try
+    {
+        std::cout << "server" << std::endl;
+        Babel::Database::MySQLiteDatabase myDB("babel.db");
+        Babel::Database::UserServices userService;
+        userService.createTableIfNotExists(&myDB);
+        Babel::Database::UserDB user = { id: 0, username: "testUser", password: "testPassword" };
+        Babel::Database::UserDB user1 = { id: 0, username: "testUser1", password: "testPassword1" };
+        Babel::Database::UserDB user2 = { id: 0, username: "testUser2", password: "testPassword2" };
+        Babel::Database::UserDB user3 = { id: 0, username: "testUser3", password: "testPassword3" };
+        userService.addUser(&myDB, user);
+        userService.addUser(&myDB, user1);
+        userService.addUser(&myDB, user2);
+        userService.addUser(&myDB, user3);
+
+        Babel::Database::UserDB user12 = { -1, "", "" };
+        userService.getUserByInformations(&myDB, user12, "testUser2", "testPassword3");
+        std::cout << "id == " << user12.id << " name == " << user12.username << " pass == " << user12.password << std::endl;
+        Babel::Database::UserDB user13;
+        userService.getUserByInformations(&myDB, user13, "testUser2", "testPassword3");
+        std::cout << "id == " << user13.id << " name == " << user13.username << " pass == " << user13.password << std::endl;
+
+        Babel::Database::MessagesServices msgService;
+        msgService.createTableIfNotExists(&myDB);
+        Babel::Database::Message msg1 = { messageId: 0, senderId: 1, receiverId: 3, message: "Alors, alors, alors petit trou du cul ! Mais où est tu donc allé te fourrer, tes chaussettes sont toutes sales !" };
+        Babel::Database::Message msg2 = { messageId: 0, senderId: 2, receiverId: 3, message: "Salut mec !" };
+        Babel::Database::Message msg3 = { messageId: 0, senderId: 3, receiverId: 1, message: "Dans la zone frérot !" };
+        
+        msgService.addMessage(&myDB, msg1);        
+        msgService.addMessage(&myDB, msg2);        
+        msgService.addMessage(&myDB, msg3);        
+
+        std::vector<Babel::Database::Message> msgV;
+
+        msgService.getMessagesByInformations(&myDB, msgV, 1, 3);
+
+        for (const auto &it : msgV) {
+            std::cout << "msgId == " << it.messageId << " senderId == " << it.senderId << " receiverId == " << it.receiverId << " message == " << it.message << std::endl;
+        }
+
+        // Babel::Database::MyDatabase database;
+        // Babel::Database::UserDB user = { id: 10, username: "testUser", password: "testPassword" };
+        // Babel::Database::UserDB user1 = { id: 12, username: "testUser1", password: "testPassword" };
+        // Babel::Database::UserDB user2 = { id: 2, username: "testUser2", password: "testPassword" };
+
+        // database.addUser(user);
+        // database.addUser(user1);
+        // database.addUser(user2);
+
+        // std::vector<Babel::Database::UserDB> myvec;
+
+        // database.getAllUsers(myvec);
+        // for (const auto &it : myvec) {
+        //     std::cout << "username = " << it.username << " password = " << it.password << std::endl;
+        // }
+
+        // Babel::Database::UserDB newUser;
+        // database.getUserByInformations(newUser, "testUser", "testPassword");
+        // std::cout << "[getUserByInformations] id == " << newUser.id << " username == " << newUser.username << " password == " << newUser.password << std::endl;
+
+        // Babel::Database::UserDB newUser1;
+        // database.getUserById(newUser1, 12);
+        // std::cout << "[getUserById] id == " << newUser1.id << " username == " << newUser1.username << " password == " << newUser1.password << std::endl;
+
+        // Babel::Database::UserDB newUser2;
+        // database.getUserByUsername(newUser2, "testUser2");
+        // std::cout << "[getUserByUsername] id == " << newUser2.id << " username == " << newUser2.username << " password == " << newUser2.password << std::endl;
+
+
+        return 0;
+    }
+    catch(const Errors &e)
+    {
+        std::cout << e.what() << std::endl;
+        return 84;
+    }
+}

@@ -1,0 +1,6 @@
+<img *ngIf="nasaImgUrl !== '' && mediaType === 'img'" class="card-img rounded img-fluid" [src]="nasaImgUrl | safe" alt="nasa image" >
+<iframe class="mt-2" *ngIf="nasaImgUrl !== '' && mediaType === 'video'" width="100%"
+  [src]="nasaImgUrl | safe"
+  style="border: 0;"
+  allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+</iframe>

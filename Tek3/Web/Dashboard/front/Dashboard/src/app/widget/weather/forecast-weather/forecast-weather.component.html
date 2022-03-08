@@ -1,0 +1,23 @@
+<label for="typeahead-prevent-manual-entry">Search for a city:</label>
+<input id="typeahead-prevent-manual-entry"  type="text" class="form-control"
+       [(ngModel)]="model"
+       [ngbTypeahead]="search"
+       [inputFormatter]="formatter"
+       [resultFormatter]="formatter"
+       [editable]='false' />
+<div class="progress mt-2" *ngIf="isLoading">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
+</div>
+<div *ngIf="model && data !isLoading">
+  <div class="mt-2 text-center" *ngFor="let day of forecast">
+    <div>{{ getDate(day.date) | date }}</div>
+    <div class="row">
+      <div class="col-6">
+        <h4>{{ day.day.avgtemp_c }}°C</h4>
+      </div>
+      <div class="col-6">
+        <img [src]="getIconUrl(day.day.condition.icon) | safe" alt="day-img">
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,133 @@
+<div>
+  <div class="min-w-full">
+    <!-- Step 1 -->
+    <div id="firststep" class="px-8 py-6 mt-4 bg-white shadow-lg rounded-lg">
+      <span class="bg-black text-white text-center py-2 px-4 rounded-full inline-flex items-center">
+        1
+      </span>
+      <span class="text-3xl"> Choose action</span>
+      <ng-container *ngTemplateOutlet="serviceSelection; context:{isReaction: false}">
+      </ng-container>
+    </div>
+    <!-- Step 2 -->
+    <div id="secondstep" class="px-8 py-6 mt-4 bg-white shadow-lg rounded-lg" *ngIf="selectedActionTmp"
+      [style.margin-bottom]="!selectedAction ? '420px' : ''">
+      <span class="bg-black text-white text-center py-2 px-4 rounded-full inline-flex items-center">
+        2
+      </span>
+      <span class="text-3xl"> Setup action</span>
+      <div class="mt-4 mb-4 text-xl">{{selectedActionTmp!.display_name}}</div>
+      <div class="mt-4 mb-4">{{selectedActionTmp!.description}}</div>
+      <div class="grid grid-cols-4 gap-2">
+        <ng-container
+          *ngTemplateOutlet="argumentsSetup; context:{arguments: selectedActionTmp!.arguments, values: actionArgumentsValues}">
+        </ng-container>
+      </div>
+      <div class="flex justify-end mt-4">
+        <button class="h-10 px-6 font-semibold rounded-md bg-black text-white" type="submit"
+          (click)="selectedAction = selectedActionTmp; scrollToElement('thirdstep', 800)">
+          Next
+        </button>
+      </div>
+    </div>
+    <!-- Step 3 -->
+    <div *ngIf="selectedAction" id="thirdstep" class="px-8 py-6 mt-4 bg-white shadow-lg rounded-lg"
+      [style.margin-bottom]="!selectedReaction ? '340px' : ''">
+      <span class="bg-black text-white text-center py-2 px-4 rounded-full inline-flex items-center">
+        3
+      </span>
+      <span class="text-3xl"> Choose reaction</span>
+      <ng-container *ngTemplateOutlet="serviceSelection; context:{isReaction: true}">
+      </ng-container>
+    </div>
+    <!-- Step 4 -->
+    <div id="fourthstep" class="px-8 py-6 mt-4 bg-white shadow-lg rounded-lg" *ngIf="selectedReaction"
+      [style.margin-bottom]="'420px'">
+      <span class="bg-black text-white text-center py-2 px-4 rounded-full inline-flex items-center">
+        4
+      </span>
+      <span class="text-3xl"> Setup reaction</span>
+      <div class="mt-4 mb-4 text-xl">{{selectedReaction!.display_name}}</div>
+      <div class="mt-4 mb-4">{{selectedReaction!.description}}</div>
+      <div class="grid grid-cols-4 gap-2">
+        <ng-container
+          *ngTemplateOutlet="argumentsSetup; context:{arguments: selectedReaction!.arguments, values: reactionArgumentsValues}">
+        </ng-container>
+      </div>
+      <div class="flex justify-end mt-4">
+        <button class="h-10 px-6 font-semibold rounded-md bg-black text-white" type="submit"
+          (click)="validateReaction()">
+          Create the reaction
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #serviceSelection let-isReaction="isReaction">
+  <div class="flex mt-5">
+    <div class="flex-none w-48 relative border-r border-l border-b">
+      <ng-container *ngFor="let service of services">
+        <a type="button" (click)="selectedService = service" class="cursor-pointer grid border-t border-gray-300 p-3"
+          [class]="selectedService?.name == service.name ? 'bg-black text-white hover:bg-gray-700' : 'hover:bg-gray-200'"
+          *ngIf="isReaction ? service.reactions && service.reactions.length > 0 : service.actions && service.actions.length > 0">
+          <div class="flex">
+            <img [src]="service.icon" style="width: 32px; height: 32px; margin-right: 10px;" /> {{service.display_name}}
+          </div>
+          <small style="color: red" *ngIf="service.authentication_required && !subscriptions[service.authentication_required]">Authentification nécessaire</small>
+        </a>
+      </ng-container>
+    </div>
+    <div class="ml-5" *ngIf="selectedService; else noServiceSelected">
+      <div class="grid grid-cols-4 gap-2" *ngIf="!selectedService.authentication_required || subscriptions[selectedService.authentication_required]; else noAuthentified">
+        <div *ngFor="let item of (isReaction ? selectedService!.reactions : selectedService!.actions)">
+          <a type="button" (click)="isReaction ? selectReaction(item) : selectActionTmp(item)"
+            class="cursor-pointer rounded-lg shadow-md p-3 w-full"
+            [class]="(isReaction ? selectedReaction?.name == item.name : selectedActionTmp?.name == item.name) ? 'bg-black text-white hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'">
+            {{item.display_name}}
+          </a>
+        </div>
+      </div>
+      <ng-template #noAuthentified>
+        <div class="text-center">
+          <div class="text-xl">
+            <span class="text-red-500">
+              <i class="fas fa-exclamation-triangle"></i>
+            </span>
+          </div>
+          <div class="text-lg">
+            You need to authenticate to use this service
+            <app-auth-button [serviceName]="selectedService.display_name" (getToken)="getTokenByAuthority($event, selectedService.display_name)" ></app-auth-button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <ng-template #noServiceSelected>
+      <div class="ml-5">Select a service on the left</div>
+    </ng-template>
+  </div>
+</ng-template>
+
+<ng-template #argumentsSetup let-arguments="arguments" let-values="values">
+  <div *ngFor="let argument of arguments" class="border-2 p-3 rounded-lg">
+    {{argument.display_name}}
+    <ng-container *ngIf="argument.options.length == 0; else optionsDisplay">
+      <div *ngIf="argument.type == 'string'" class="mt-2">
+        <input type="text" class="w-full p-2 border-2" placeholder="{{argument.default}}"
+          [(ngModel)]="values[argument.name]" />
+      </div>
+      <div *ngIf="argument.type == 'number'" class="mt-2">
+        <input type="number" class="w-full p-2 border-2" placeholder="{{argument.default}}"
+          [(ngModel)]="values[argument.name]" />
+      </div>
+    </ng-container>
+    <ng-template #optionsDisplay>
+      <div class="mt-2">
+        <select class="w-full p-2 border-2"
+          [(ngModel)]="values[argument.name]">
+          <option *ngFor="let option of argument.options" [value]="option.name">{{option.name}}</option>
+        </select>
+      </div>
+    </ng-template>
+  </div>
+</ng-template>

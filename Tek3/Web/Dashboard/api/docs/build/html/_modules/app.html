@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app &mdash; Dashboard 0.1 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Dashboard
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">api</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Dashboard</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>app</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pymysql</span> <span class="kn">import</span> <span class="n">NULL</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">make_response</span>
+<span class="kn">from</span> <span class="nn">connection</span> <span class="kn">import</span> <span class="n">ConnectionDatabase</span>
+<span class="kn">from</span> <span class="nn">api</span> <span class="kn">import</span> <span class="n">API</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">google.oauth2</span> <span class="kn">import</span> <span class="n">id_token</span>
+<span class="kn">from</span> <span class="nn">google_auth_oauthlib.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="kn">from</span> <span class="nn">pip._vendor</span> <span class="kn">import</span> <span class="n">cachecontrol</span>
+<span class="kn">import</span> <span class="nn">google.auth.transport.requests</span>
+<span class="kn">from</span> <span class="nn">flask_cors</span> <span class="kn">import</span> <span class="n">CORS</span>
+<span class="kn">from</span> <span class="nn">flask_session</span> <span class="kn">import</span> <span class="n">Session</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">flask_restful_swagger</span> <span class="kn">import</span> <span class="n">swagger</span>
+<span class="kn">from</span> <span class="nn">flask_restful</span> <span class="kn">import</span> <span class="n">Api</span>
+<span class="kn">from</span> <span class="nn">flask_selfdoc</span> <span class="kn">import</span> <span class="n">Autodoc</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">secretKey</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">secretKey</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;filesystem&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_FILE_DIR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;./.flask_session/&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">secret_key</span> <span class="o">=</span> <span class="n">secretKey</span>
+
+<span class="n">cors</span> <span class="o">=</span> <span class="n">CORS</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="n">Session</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="n">auto</span> <span class="o">=</span> <span class="n">Autodoc</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="n">caches_folder</span> <span class="o">=</span> <span class="s2">&quot;./.spotify_caches/&quot;</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">caches_folder</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">caches_folder</span><span class="p">)</span>
+
+<div class="viewcode-block" id="session_cache_path"><a class="viewcode-back" href="../app.html#app.session_cache_path">[docs]</a><span class="k">def</span> <span class="nf">session_cache_path</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">caches_folder</span> <span class="o">+</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uuid&#39;</span><span class="p">)</span></div>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OAUTHLIB_INSECURE_TRANSPORT&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">pass</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">ConnectionDatabase</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<div class="viewcode-block" id="get_connection"><a class="viewcode-back" href="../app.html#app.get_connection">[docs]</a><span class="k">def</span> <span class="nf">get_connection</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">conn</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span></div>
+  
+<div class="viewcode-block" id="get_random_string"><a class="viewcode-back" href="../app.html#app.get_random_string">[docs]</a><span class="k">def</span> <span class="nf">get_random_string</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+    <span class="c1"># choose from all lowercase letter</span>
+    <span class="n">letters</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span>
+    <span class="n">result_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">letters</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Random string of length&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="s2">&quot;is:&quot;</span><span class="p">,</span> <span class="n">result_str</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="index"><a class="viewcode-back" href="../app.html#app.index">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s1">&#39;Flask API&#39;</span></div>
+
+<div class="viewcode-block" id="login_is_required"><a class="viewcode-back" href="../app.html#app.login_is_required">[docs]</a><span class="k">def</span> <span class="nf">login_is_required</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+      <span class="k">if</span> <span class="s2">&quot;user_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">session</span><span class="p">:</span>
+          <span class="n">abort</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span> <span class="c1"># Authentication required</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">function</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">wrapper</span></div>
+
+<div class="viewcode-block" id="register"><a class="viewcode-back" href="../app.html#app.register">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users/register&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">register</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /users/register -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;email&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">email</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;password&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">password</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">email</span> <span class="o">!=</span> <span class="n">NULL</span> <span class="ow">and</span> <span class="n">password</span> <span class="o">!=</span> <span class="n">NULL</span><span class="p">:</span>    
+      <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error register. Not good args&#39;</span> <span class="p">}</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error register&#39;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="get_user"><a class="viewcode-back" href="../app.html#app.get_user">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users/get-user&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_user</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /users/get-user -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">userId</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">userId</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;/users/get-user&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error get user&#39;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="authenticate"><a class="viewcode-back" href="../app.html#app.authenticate">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users/authenticate&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">authenticate</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /users/authenticate -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">idOAuth2</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;email&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">email</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;password&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">password</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;idOAuth2&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">idOAuth2</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;idOAuth2&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;service&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">service</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;service&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;urlCover&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">urlCover</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;urlCover&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">idOAuth2</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">idOAuth2</span> <span class="o">==</span> <span class="n">NULL</span> <span class="ow">and</span> <span class="n">email</span> <span class="o">!=</span> <span class="n">NULL</span> <span class="ow">and</span> <span class="n">password</span> <span class="o">!=</span> <span class="n">NULL</span><span class="p">):</span>
+      <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">idOAuth2</span> <span class="o">==</span> <span class="n">NULL</span> <span class="ow">or</span> <span class="n">email</span> <span class="o">==</span> <span class="n">NULL</span> <span class="ow">or</span> <span class="n">service</span> <span class="o">==</span> <span class="n">NULL</span> <span class="ow">or</span> <span class="n">urlCover</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">:</span>
+      <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Missing Argument&#39;</span>
+      <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">login_oauth2</span><span class="p">(</span><span class="n">idOAuth2</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;/users/authenticate&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error authenticate&#39;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="add_widget"><a class="viewcode-back" href="../app.html#app.add_widget">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/widget/add-widget&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">add_widget</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /widget/add-widget -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">idUser</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">city</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">urlProfile</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">idUser</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;service&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">service</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;service&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;title&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">title</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;coords&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">coords</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;date&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;city&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="n">city</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;city&quot;</span><span class="p">]</span>
+    <span class="c1"># if &#39;urlProfile&#39; in keys:</span>
+    <span class="c1">#       urlProfile = data[&quot;urlProfile&quot;]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">idUser</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">city</span><span class="p">,</span> <span class="n">urlProfile</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;/widget/add-widget&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /widget/add-widget&#39;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="get_widgets_by_user"><a class="viewcode-back" href="../app.html#app.get_widgets_by_user">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/widget/get-widgets-by-user&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_widgets_by_user</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /widget/get-widgets-by-user -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">idUser</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">idUser</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_widgets_by_id</span><span class="p">(</span><span class="n">idUser</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;/widget/add-widget&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /widget/get-widgets_by_id&#39;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>    </div>
+
+<div class="viewcode-block" id="delete_widget"><a class="viewcode-back" href="../app.html#app.delete_widget">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/widget/delete-widget&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">delete_widget</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /widget/delete-widget -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">idWidget</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">idWidget</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">delete_widget_by_id</span><span class="p">(</span><span class="n">idWidget</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;/widget/add-widget&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /widget/delete-widget&#39;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="save_widget_position"><a class="viewcode-back" href="../app.html#app.save_widget_position">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/widget/save-widget-position&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">save_widget_position</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /widget/save-widget-position -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">idWidget</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">idWidget</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;position&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">position</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">save_widget_position</span><span class="p">(</span><span class="n">idWidget</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;/widget/add-widget&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /widget/save-widget-position&#39;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="save_url_profile"><a class="viewcode-back" href="../app.html#app.save_url_profile">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/widget/save-url-profile&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">save_url_profile</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /widget/save-url-profile -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">idWidget</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">urlProfile</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">idWidget</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;urlProfile&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+      <span class="n">urlProfile</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;urlProfile&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">save_url_profile</span><span class="p">(</span><span class="n">idWidget</span><span class="p">,</span> <span class="n">urlProfile</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;/widget/save-url-profile&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /widget/save-url-profile&#39;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="get_photo_of_today"><a class="viewcode-back" href="../app.html#app.get_photo_of_today">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/nasa/photo-of-today&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_photo_of_today</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /nasa/photo-of-today -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_photo_of_today_nasa</span><span class="p">()</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error get photo of today&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="get_photo_of_the_day"><a class="viewcode-back" href="../app.html#app.get_photo_of_the_day">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/nasa/photo-of-the-day&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_photo_of_the_day</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /nasa/photo-of-the-day -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_photo_of_the_day_nasa</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error get photo of the day&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="save_date_nasa_photo_widget"><a class="viewcode-back" href="../app.html#app.save_date_nasa_photo_widget">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/nasa/save-date-to-nasa-photo-widget&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">save_date_nasa_photo_widget</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /nasa/save-date-to-nasa-photo-widget -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">widgetId</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">save_date_nasa_photo_widget</span><span class="p">(</span><span class="n">widgetId</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /nasa/save_date_nasa_photo_widget/&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="search_nasa_image"><a class="viewcode-back" href="../app.html#app.search_nasa_image">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/nasa/search-image&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">search_nasa_image</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /nasa/search-image -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;search&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">search_nasa_image</span><span class="p">(</span><span class="n">search</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /nasa/search-image&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="update_url_cover"><a class="viewcode-back" href="../app.html#app.update_url_cover">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/users/update-url-cover&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">update_url_cover</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /users/update-url-cover -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">userId</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="n">urlCover</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;urlCover&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">update_url_cover</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span> <span class="n">urlCover</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error update url cover&#39;</span> <span class="p">}</span></div>
+
+<div class="viewcode-block" id="get_latest_playlist"><a class="viewcode-back" href="../app.html#app.get_latest_playlist">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/spotify/get-latest-playlist&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_latest_playlist</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /spotify/get-latest-playlist -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">authToken</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;authToken&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_latest_playlist</span><span class="p">(</span><span class="n">authToken</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /spotify/get_latest_playlist/&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="get_recents_tracks"><a class="viewcode-back" href="../app.html#app.get_recents_tracks">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/spotify/get-recent-tracks&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_recents_tracks</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /spotify/get-latest-playlist -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">tracksNumber</span> <span class="o">=</span> <span class="n">NULL</span>
+    <span class="n">authToken</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;authToken&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;tracksNumber&#39;</span><span class="p">]:</span>
+        <span class="n">tracksNumber</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;tracksNumber&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_recents_tracks</span><span class="p">(</span><span class="n">authToken</span><span class="p">,</span> <span class="n">tracksNumber</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;API Data Exceeded&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="get_current_weather"><a class="viewcode-back" href="../app.html#app.get_current_weather">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/weather/get-current-weather&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_current_weather</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /weather/get-current-weather -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">city</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_current_weather</span><span class="p">(</span><span class="n">city</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /weather/get-current-weather&#39;</span> <span class="p">}</span></div>
+
+<div class="viewcode-block" id="get_current_weather_by_coords"><a class="viewcode-back" href="../app.html#app.get_current_weather_by_coords">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/weather/get-current-weather-by-coords&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_current_weather_by_coords</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /weather/get-current-weather-by-coords -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_current_weather_by_coords</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /weather/get_current_weather_by_coords&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="save_city_weather_widget"><a class="viewcode-back" href="../app.html#app.save_city_weather_widget">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/weather/save-city-to-weather-widget&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">save_city_weather_widget</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /weather/save-city-to-weather-widget -&gt; Method=POST</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="n">widgetId</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+    <span class="n">city</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">save_city_weather_widget</span><span class="p">(</span><span class="n">widgetId</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /weather/save-city-to-weather-widget&#39;</span> <span class="p">}</span></div>
+  
+  
+<div class="viewcode-block" id="get_forecast_weather"><a class="viewcode-back" href="../app.html#app.get_forecast_weather">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/weather/get-forecast-weather&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_forecast_weather</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /weather/get-forecast-weather -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">city</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_forecast_weather</span><span class="p">(</span><span class="n">city</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /weather/get-forecast-weather&#39;</span> <span class="p">}</span></div>
+
+<div class="viewcode-block" id="get_currency_convertor"><a class="viewcode-back" href="../app.html#app.get_currency_convertor">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/currency/currency-convertor&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_currency_convertor</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /currency/currency-convertor -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">baseCurrency</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;baseCurrency&#39;</span><span class="p">]</span>
+    <span class="n">targetCurrency</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;targetCurrency&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_currency_convertor</span><span class="p">(</span><span class="n">baseCurrency</span><span class="p">,</span> <span class="n">targetCurrency</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /currency/currency-convertor&#39;</span> <span class="p">}</span></div>
+
+<div class="viewcode-block" id="get_cryptocurrency_convertor"><a class="viewcode-back" href="../app.html#app.get_cryptocurrency_convertor">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/currency/crypto-convertor&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_cryptocurrency_convertor</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /currency/crypto-convertor -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">baseCryptoCurrency</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;baseCryptoCurrency&#39;</span><span class="p">]</span>
+    <span class="n">targetCryptoCurrency</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;targetCryptoCurrency&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_cryptocurrency_convertor</span><span class="p">(</span><span class="n">baseCryptoCurrency</span><span class="p">,</span> <span class="n">targetCryptoCurrency</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /currency/crypto-convertor&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="get_number_subscribers"><a class="viewcode-back" href="../app.html#app.get_number_subscribers">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/youtube/number-subscribers&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_number_subscribers</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /youtube/number-subscribers -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">channelName</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;channelName&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_number_subscribers_youtube_channel</span><span class="p">(</span><span class="n">channelName</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /youtube/number-subscribers&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="get_channel_ID"><a class="viewcode-back" href="../app.html#app.get_channel_ID">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/youtube/get-channel-id&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_channel_ID</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /youtube/get-channel-id -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">channelName</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;channelName&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_channel_ID</span><span class="p">(</span><span class="n">channelName</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /youtube/get-channel-id&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="get_latest_video"><a class="viewcode-back" href="../app.html#app.get_latest_video">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/youtube/get-last-video&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_latest_video</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /youtube/get-last-video -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">channelName</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;channelName&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">get_latest_video</span><span class="p">(</span><span class="n">channelName</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /youtube/get-last-video&#39;</span> <span class="p">}</span></div>
+  
+<div class="viewcode-block" id="get_github_account"><a class="viewcode-back" href="../app.html#app.get_github_account">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/github/get-github-account&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_github_account</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /github/get-github-account -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">get_connection</span><span class="p">())</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">accountName</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;accountName&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">getGithubAccount</span><span class="p">(</span><span class="n">accountName</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Error /github/get-github-account&#39;</span> <span class="p">}</span></div>
+
+<div class="viewcode-block" id="protected_area"><a class="viewcode-back" href="../app.html#app.protected_area">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/protected_area&quot;</span><span class="p">)</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="nd">@login_is_required</span>
+<span class="k">def</span> <span class="nf">protected_area</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /protected_area</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="s1">&#39;Protected !&lt;a href=&quot;/logout&quot;&gt;Logout&lt;/a&gt;&#39;</span></div>
+  
+<div class="viewcode-block" id="about"><a class="viewcode-back" href="../app.html#app.about">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/about.json&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@auto</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">about</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /about.json -&gt; Method=GET</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">res</span><span class="p">[</span><span class="s1">&#39;client&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span><span class="p">,</span>
+  <span class="p">}</span>
+  <span class="n">res</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;current_time&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()),</span>
+    <span class="s1">&#39;services&#39;</span> <span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Weather&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Current weather&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Display the temperature for a city today&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;city&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Forecast weather&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Display the temperature for a city with 3 days of prediction&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;city&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Spotify&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Recent tracks&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Display your Spotify latest played tracks&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;authToken&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Weekly playlist&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Show you your spotify weekly recommanded playlist&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;authToken&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;NASA&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Astronomy Picture Of the Day&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Display the latest NASA picture&#39;</span><span class="p">,</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Astronomy Picture Of X Day&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Display the APOD of a selected date&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Search Image&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Search images on NASA database&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;search&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;CurrencyConverter&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Price converter&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Convert the base currency to the target currency&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;baseCurrency&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;targetCurrency&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Youtube&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of subscribers&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Show youtube channel informations&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;channelName&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Last video&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Show the last video of a youtuber&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;channelName&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Github&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Github profile stat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Show the statistics of github account&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;channelName&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Laguages stat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Display the language stats of github account&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;channelName&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;CurrencyConverter&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Price converter&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Convert the base currency to the target currency&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;baseCurrency&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;targetCurrency&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;CurrencyCryptoConverter&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Price converter&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Convert the crypto base currency to the crypto target currency&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;baseCryptoCurrency&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;targetCryptoCurrency&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Youtube&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;widgets&#39;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of subscribers&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Show youtube channel informations&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;channelName&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Last video&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Show the last video of a youtuber&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;channelName&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span>
+            <span class="p">}]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="documentation"><a class="viewcode-back" href="../app.html#app.documentation">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/documentation&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">documentation</span><span class="p">():</span>
+  <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Route : /documentation</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">auto</span><span class="o">.</span><span class="n">html</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8089</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Juan &amp; Thanaël.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

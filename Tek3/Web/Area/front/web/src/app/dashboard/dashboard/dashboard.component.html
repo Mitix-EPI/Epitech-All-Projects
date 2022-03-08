@@ -1,0 +1,52 @@
+<app-navbar></app-navbar>
+<div class="scrolling-content under-nav p-4 bg-gray-100 min-h-screen">
+  <div>
+    <button
+      class="inline-block text-sm px-4 py-2 leading-none border rounded text-black border-black hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0 mr-2"
+      (click)="setupMode = !setupMode">{{!setupMode ? '+ Add a reaction' : 'x Cancel'}}</button>
+    <app-reaction-setup *ngIf="setupMode"></app-reaction-setup>
+  </div>
+  <div *ngIf="!setupMode" class="mt-5">
+    <span class="text-3xl">My reactions</span>
+    <div *ngIf="!setupMode" class="grid grid-cols-2 gap-2 mt-5">
+      <div class="rounded-lg shadow-md p-3 w-full bg-white" *ngFor="let reaction of reactions">
+        <div class="flex justify-between">
+          <span>#{{reaction[0]}}</span>
+          <a type="button" class="cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+              viewBox="0 0 20 20" fill="red" (click)="deleteReaction(reaction[0])">
+              <path fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                clip-rule="evenodd" />
+            </svg></a>
+        </div>
+        <div class="flex justify-between mt-2">
+          <div>
+            <ng-container *ngTemplateOutlet="reactionServiceDisplay; context:{item: reaction[2]}">
+            </ng-container>
+          </div>
+          <div class="align-content">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </div>
+          <div>
+            <ng-container *ngTemplateOutlet="reactionServiceDisplay; context:{item: reaction[3]}">
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #reactionServiceDisplay let-item="item">
+  <img [src]="item.service.icon" style="width: 32px; height: 32px; margin-bottom: 10px;" /> {{item.service.display_name}}
+  <span>{{item.display_name}}</span>
+  <div class="bg-gray-100 p-2 rounded-lg mt-3">
+    <small>Paramètres</small>
+    <div *ngFor="let arg of item.arguments">
+      {{arg.display_name}}: {{arg.value}}
+    </div>
+  </div>
+</ng-template>

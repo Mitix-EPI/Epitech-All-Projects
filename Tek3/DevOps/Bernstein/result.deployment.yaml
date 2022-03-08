@@ -1,0 +1,43 @@
+# TODO Not enabled Traefik
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: result
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: result
+  template:
+    metadata:
+      labels:
+        app: result
+    spec:
+      containers:
+        - name: result
+          image: epitechcontent/t-dop-600-result:k8s
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+            - secretRef:
+                name: postgres-secret
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "128M"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - result
+            topologyKey: "kubernetes.io/hostname"  
+      volumes:
+        - name: postgredb
+      restartPolicy: Always

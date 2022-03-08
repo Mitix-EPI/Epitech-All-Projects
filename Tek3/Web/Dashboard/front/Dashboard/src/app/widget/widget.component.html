@@ -1,0 +1,27 @@
+<div *ngIf="service" class="card mb-3" [ngStyle]="{'border-color': service.color}" cdkDrag cdkDragBoundary=".board" [cdkDragFreeDragPosition]="dragPosition" (cdkDragEnded)="dragEnd($event)" style="max-width: 34rem; position: absolute;">
+  <div class="card-header" [ngStyle]="{'color': service.color }" >
+    <div class="card-title">
+      <i [ngClass]="service.icon"></i>
+      {{ service.service }}
+      <button class="close float-end" (click)="closeWidgetFct()" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+    <h4 class="card-title">{{ service.title }}</h4>
+    <app-nasa-today-photo *ngIf="service.title === 'Today\'s photo'"></app-nasa-today-photo>
+    <app-nasa-x-day-photo [service]="service" *ngIf="service.title === 'Nasa Image'"></app-nasa-x-day-photo>
+    <app-nasa-search-image [service]="service" *ngIf="service.title === 'Search Image'"></app-nasa-search-image>
+    <app-spotify-playlist *ngIf="service.title === 'Your weekly spotify playlist'"></app-spotify-playlist>
+    <app-spotify-recent-tracks *ngIf="service.title === 'Your recently played tracks'"></app-spotify-recent-tracks>
+    <app-weather-current-weather [service]="service" *ngIf="service.title === 'Current weather'"></app-weather-current-weather>
+    <app-weather-forecast-weather [service]="service" *ngIf="service.title === 'Forecast weather'"></app-weather-forecast-weather>
+    <app-currency-currency-converter [service]="service" *ngIf="service.title === 'Price converter'"></app-currency-currency-converter>
+    <app-currency-crypto-converter [service]="service" *ngIf="service.title === 'Crypto converter'"></app-currency-crypto-converter>
+    <app-youtube-subscribers [service]="service" *ngIf="service.title === 'Number of subscribers'"></app-youtube-subscribers>
+    <app-youtube-last-video [service]="service" *ngIf="service.title === 'Last video'"></app-youtube-last-video>
+    <app-github-stats [service]="service" *ngIf="service.title === 'Github profile stat'"></app-github-stats>
+    <app-github-languages [service]="service" *ngIf="service.title === 'Laguages stat'"></app-github-languages>
+  </div>
+</div>

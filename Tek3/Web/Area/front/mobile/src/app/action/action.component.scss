@@ -1,0 +1,25 @@
+ion-content {
+    --background: #f2f2f7;
+}
+
+ion-col > div {
+    background-color: #f7f7f7;
+    border: solid 1px #ddd;
+    padding: 10px;
+}
+
+ion-row {
+    text-align: center;
+}
+
+.w-6 {
+    width: 1.5rem;
+}
+
+.h-6 {
+    height: 1.5rem;
+}
+
+.trash-icon {
+    font-size: 30px;
+}

@@ -1,0 +1,23 @@
+# TODO Not enabled Traefik
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:5.0
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 6379
+      restartPolicy: Always
