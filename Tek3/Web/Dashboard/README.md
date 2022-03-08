@@ -57,4 +57,4 @@ The [adminer](http://localhost:8081) should be available at http://localhost:808
 
 ## Collaboration
 
-- [Thanaël Fontainer](https://github.com/ThanaelFontaine)
+- [Thanaël Fontaine](https://github.com/ThanaelFontaine)
