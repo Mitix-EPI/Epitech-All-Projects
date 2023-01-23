@@ -22,11 +22,9 @@
 | [Minishell 2] | C | Creation of a shell which includes [pipelines] and [redirections] (using [binary tree]) | ![Medium Difficulty] |
 | [42sh] | C | Creation of a complete shell reproducing [TCSH shell] comportment | ![Hard Difficulty] | :star: |
 
-[Easy Difficulty]: https://via.placeholder.com/20/0FFF00/000000?text=+
-
-[Medium Difficulty]: https://via.placeholder.com/20/FFE000/000000?text=+
-
-[Hard Difficulty]: https://via.placeholder.com/20/FF3A00/000000?text=+
+[Easy Difficulty]: ../images/easy.png
+[Medium Difficulty]: ../images/medium.png
+[Hard Difficulty]: ../images/hard.png
 
 [C Pool Days Part 1]: https://github.com/Mitix-EPI/Epitech-All-Projects/tree/main/Tek1/CPool%20Part1
 
